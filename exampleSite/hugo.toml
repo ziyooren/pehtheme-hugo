@@ -12,12 +12,31 @@ enableRobotsTXT = true # <- Generate robots.txt with a sitemap reference
 	# Meta description, not exceeding 160 characters, used for the meta description within the HTML head
 	description = 'Pehtheme Hugo Lite: A minimalist Hugo theme, built with TailwindCSS, for efficient performance and minimalism.'
 	mainSections = 'posts'
+	# logo = '/images/logo.png' # <- Optional: replace the default egg-fried icon in the header
 
 	[params.author]
 		name = 'Anthony Arphan'
 		bio = 'Debitis assumenda esse dignissimos aperiam delectus maxime tenetur repudiandae dolore'
 		avatar = '/images/nasa-astronaut-unsplash.jpg'
 		twitter = 'https://twitter.com/insertapps'
+
+	[params.social] # Social links; unset entries are hidden
+		facebook = 'https://facebook.com/insertapps'
+		twitter = 'https://twitter.com/insertapps'
+		github = 'https://github.com/insertapps'
+		instagram = 'https://instagram.com/insertapps'
+
+	[params.footer]
+		tagline = 'Write with love. Minimalism design. Clean code and built in Rembele, Gayo Highland.'
+		description = 'A minimalist Hugo blog theme with clean code and efficient performance.'
+		# copyright = '© 2026 Your Name. All rights reserved.' # <- Defaults to "Copyright © <year>. All rights reserved."
+
+	[params.newsletter] # Newsletter box; the form only renders when "action" is set
+		title = 'Stay In The Loop! Subscribe to Our Newsletter.'
+		description = 'Join our community of enthusiasts and stay informed. Just enter your email below and we will make sure you are always in the know!'
+		action = 'https://example.com/subscribe' # <- Replace with your subscribe endpoint (e.g. Buttondown, Mailchimp)
+		placeholder = 'Email...'
+		button = 'Subscribe'
 
 [pagination]
 	pagerSize = 6 # <- Set the desired number of posts per page 

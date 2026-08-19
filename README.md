@@ -81,6 +81,49 @@ To display the author box on article pages, define the author under `params`:
   twitter = 'https://twitter.com/yourhandle'
 ```
 
+To configure the social icons (in the footer and the article author box), define them under `params` — entries that are not set are hidden automatically:
+
+```toml
+[params.social]
+  facebook  = 'https://facebook.com/yourpage'
+  twitter   = 'https://twitter.com/yourhandle'
+  github    = 'https://github.com/yourname'
+  instagram = 'https://instagram.com/yourhandle'
+```
+
+To customize the footer text and copyright, use:
+
+```toml
+[params.footer]
+  tagline     = 'Your short tagline'                 # (Optional)
+  description = 'A longer description of your site'  # (Optional)
+  copyright   = '© 2026 Your Name. All rights reserved.' # (Optional; defaults to "Copyright © <year>")
+```
+
+To enable the newsletter box (the form only renders when `action` is set — point it at your subscription service, e.g. Buttondown or Mailchimp):
+
+```toml
+[params.newsletter]
+  title       = 'Stay In The Loop! Subscribe to Our Newsletter.'
+  description = 'Join our community...'
+  action      = 'https://buttondown.com/yourlist'
+  placeholder = 'Email...'
+  button      = 'Subscribe'
+```
+
+To replace the default egg-fried logo icon in the header with your own image:
+
+```toml
+[params]
+  logo = '/images/logo.png'
+```
+
+Comments are powered by Disqus — set your shortname in `hugo.toml`:
+
+```toml
+disqusShortname = 'your-disqus-shortname'
+```
+
 To generate a `robots.txt` that references your sitemap, enable it in your config:
 
 ```toml
