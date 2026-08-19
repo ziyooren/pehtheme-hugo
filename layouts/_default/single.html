@@ -93,7 +93,15 @@
 
       <div id="author-box" class="my-8 md:my-14 border p-8 bg-zinc-100 rounded-2xl">
 
-        <img class="w-20 h-20 rounded-full" src="{{ .Site.Params.Author.avatar }}" alt="{{ .Site.Params.Author.name }}">
+        {{- with .Site.Params.Author.avatar }}
+        {{- if strings.HasPrefix . "http" }}
+        <img class="w-20 h-20 rounded-full" src="{{ . }}" alt="{{ $.Site.Params.Author.name }}">
+        {{- else }}
+        {{- with $avatar := resources.Get . }}
+        <img class="w-20 h-20 rounded-full" src="{{ $avatar.RelPermalink }}" alt="{{ $.Site.Params.Author.name }}">
+        {{- end }}
+        {{- end }}
+        {{- end }}
 
         <h2 class="text-xl font-bold my-4">Written by : {{ .Site.Params.Author.name }}</h2>
 

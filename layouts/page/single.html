@@ -2,11 +2,23 @@
 
 <div class="py-14">
 
-	<div class="mb-14">	
+	{{- with .Params.image }}
+	<div class="mb-14">
 
-		<img class="rounded-3xl" src="{{ .Params.image | absURL }}" alt="{{ .Title }}">
+		{{- if strings.HasPrefix . "http" }}
+
+		<img class="rounded-3xl" src="{{ . }}" alt="{{ $.Title }}">
+
+		{{- else }}
+
+		{{- with $img := resources.Get . }}
+		<img class="rounded-3xl" src="{{ $img.RelPermalink }}" alt="{{ $.Title }}" width="{{ $img.Width }}" height="{{ $img.Height }}">
+		{{- end }}
+
+		{{- end }}
 
 	</div>
+	{{- end }}
 
 
 	<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
