@@ -7,7 +7,7 @@
     "dev:generate": "npx tailwindcss -i ./assets/input.css -o ./themes/pehtheme-hugo/assets/css/main.css -w",
     "dev:hugo": "hugo server",
     "dev": "run-p dev:*",
-    "build:generate": "npx tailwindcss -i ./assets/input.css -o ./themes/pehtheme/static/assets/css/main.css",
+    "build:generate": "npx tailwindcss -i ./assets/input.css -o ./themes/pehtheme-hugo/assets/css/main.css",
     "build:hugo": "hugo",
     "build": "run-p build:*"
   },

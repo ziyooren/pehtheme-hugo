@@ -38,7 +38,7 @@
 
 <section class="mb-16">
 
-    {{ $cat := "astronomy" }}
+    {{ $cat := site.Params.home_category | default "astronomy" }}
 
     <div class="flex items-center mb-6">
 

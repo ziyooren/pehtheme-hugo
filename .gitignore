@@ -1,0 +1,5 @@
+# WorkBuddy workspace memory
+.workbuddy/
+
+# Local symlink used to run the example site (themes/pehtheme-hugo -> repo root)
+exampleSite/themes/

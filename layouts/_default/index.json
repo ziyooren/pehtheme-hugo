@@ -1,0 +1,16 @@
+{{- /* Search index: JSON feed of all regular pages for client-side search.
+         Requires [outputs] home = ["HTML", "RSS", "JSON"] in your site config. */ -}}
+{{- $pages := site.RegularPages -}}
+{{- $data := slice -}}
+{{- range $pages -}}
+  {{- $data = $data | append (dict
+    "title"      .Title
+    "permalink"  .Permalink
+    "date"       (.Date.Format "2006-01-02")
+    "description" (.Params.description | default (.Summary | plainify))
+    "summary"    (.Summary | plainify)
+    "tags"       (.Params.tags | default slice)
+    "categories" (.Params.categories | default slice)
+  ) -}}
+{{- end -}}
+{{- $data | jsonify -}}
