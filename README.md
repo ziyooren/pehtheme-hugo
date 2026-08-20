@@ -1,91 +1,93 @@
+[English](README.md) | [中文](README.zh-CN.md)
+
 # Pehtheme Hugo
 
-一个基于 [deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo) 二次开发、**独立维护**的 Hugo 极简博客主题。在保留原主题极简、高性能特性的基础上，针对生产环境做了大量扩展：Cookie 同意管理（Google Consent Mode v2）、统计/广告脚本注入、PaperMod 内容兼容、独立搜索/归档页面、文内广告、打赏按钮、SEO 增强等。
+An **independently maintained** Hugo minimalist blog theme, extended from [deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo). It keeps the original theme's minimalism and performance while adding a set of production-grade features: cookie consent management (Google Consent Mode v2), analytics/ads script injection, PaperMod content compatibility, standalone search & archives pages, inline ads, donation buttons and SEO enhancements.
 
-由 [@ziyooren](https://github.com/ziyooren) 维护，实际用于 [theWindows12.com](https://www.thewindows12.com/) 与 [cnelecar.com](https://www.cnelecar.com/)。
+Maintained by [@ziyooren](https://github.com/ziyooren), powering [theWindows12.com](https://www.thewindows12.com/) and [cnelecar.com](https://www.cnelecar.com/).
 
-## 功能特性
+## Features
 
-### 基础（源自上游）
-- Tailwind CSS 构建，无第三方 JS 依赖
-- 客户端搜索（index.json，无后端）
-- 首页置顶文章（`feature` 标签）+ 首页分类栏目 + Recent Post（自动排除置顶/栏目文章）
-- 顶部菜单、标签列表、侧边栏 Recent Post / 广告位
-- 双栏博客布局、语义化 HTML
+### Core (from upstream)
+- Tailwind CSS, no third-party JS dependencies
+- Client-side search (`index.json`, no backend)
+- Homepage feature post (via the `feature` tag), homepage category section and Recent Post (featured/category picks are automatically excluded)
+- Top menu, tag list, sidebar with recent posts / ad box
+- Two-column blog layout, semantic HTML
 
-### 扩展（本仓库新增）
-- **Cookie 同意横幅**（Google Consent Mode v2 宽松模式）：`top / modal / bottom` 三种位置，接受 / 拒绝 / 按类自定义，footer 可随时重新设置
-- **脚本注入**：GA4 / GTM / AdSense / 自定义 head/body 脚本，全部配置化
-- **PaperMod 内容兼容**：`cover.image` 封面字段、`video` shortcode、多实例搜索——从 PaperMod 迁移无需改内容
-- **独立 `/search/` 与 `/archives/` 页面**（`type: "search"` / `type: "archives"`）
-- **文内广告**：`<h2>` 前自动插入 AdSense 单元
-- **打赏按钮**（Buy Me a Coffee 等）
-- **Affiliate Disclosure** 链接（文章作者行）
-- **SEO 增强**：分类/标签页 noindex（保护抓取预算）、结构化数据按页面类型区分（WebSite / BlogPosting / WebPage / BreadcrumbList）、og/twitter 卡片完整输出、空 description 自动摘要兜底
-- 分页尊重全局 `pagerSize`；图片解析支持 远程 URL / page-bundle 资源 / assets 资源
+### Extensions (added in this repo)
+- **Cookie consent banner** (Google Consent Mode v2, relaxed mode): `top / modal / bottom` positions, accept / decline / per-category customization, footer "Cookie settings" to re-open anytime
+- **Script injection**: GA4 / GTM / AdSense / custom head & body scripts, fully configurable
+- **PaperMod content compatibility**: `cover.image` front matter, `video` shortcode, multi-instance search — migrate from PaperMod without touching content
+- **Standalone `/search/` and `/archives/` pages** (`type: "search"` / `type: "archives"`)
+- **Inline ads**: AdSense unit inserted before every `<h2>` in article content
+- **Donation button** (Buy Me a Coffee, etc.)
+- **Affiliate Disclosure** link in the article author line
+- **SEO enhancements**: noindex on taxonomy pages (preserve crawl budget), page-type-aware structured data (WebSite / BlogPosting / WebPage / BreadcrumbList), full Open Graph & Twitter Card output, auto-summary fallback for empty descriptions
+- Pagination respects the global `pagerSize`; image resolution supports remote URLs, page-bundle resources and assets
 
-## 快速开始
+## Quick start
 
 ```bash
-# 作为 submodule 安装（推荐，便于更新）
+# Install as a submodule (recommended for easy updates)
 git submodule add https://github.com/ziyooren/pehtheme-hugo.git themes/pehtheme-hugo
 
-# 最小配置 hugo.toml
+# Minimal hugo.toml
 baseURL = 'https://example.com/'
-languageCode = 'en-us'   # 中文站用 zh-cn
+languageCode = 'en-us'   # 'zh-cn' for Chinese sites
 title = 'My Site'
 theme = 'pehtheme-hugo'
 
 [params]
   description = 'Site-wide meta description'
-  mainSections = ['posts']   # 文章 section（默认 posts；blog 站改为 ['blog']）
+  mainSections = ['posts']   # post sections (default posts; use ['blog'] for blog sites)
 ```
 
-完整配置参考见 [exampleSite/hugo.toml](exampleSite/hugo.toml)（含全部可选配置的注释示例）。
+See [exampleSite/hugo.toml](exampleSite/hugo.toml) for a fully commented reference configuration.
 
-## 配置参考
+## Configuration reference
 
 ```toml
 [params]
   description = '...'
-  mainSections = ['posts']          # 首页 Recent Post / 搜索 / RSS 收录范围
-  logo = '/images/logo.png'         # 自定义 header logo（透明背景 PNG 友好）
-  og_image = '/images/default-og.png'   # 社交分享兜底图
-  home_category = 'News'            # 首页分类栏目（显示该分类 3 篇）
-  affiliate_disclosure = '/affiliate-disclosure/'  # 文章作者行 Affiliate 链接
+  mainSections = ['posts']              # feeds homepage Recent Post / search / RSS
+  logo = '/images/logo.png'             # custom header logo (transparent PNG friendly)
+  og_image = '/images/default-og.png'   # fallback social share image
+  home_category = 'News'                # homepage category section (shows 3 posts)
+  affiliate_disclosure = '/affiliate-disclosure/'  # affiliate link in the author line
   affiliate_disclosure_label = 'Affiliate Disclosure'
 
-  [params.author]                   # 作者信息（作者框 / 结构化数据）
+  [params.author]                       # author info (author box / structured data)
     name = 'Your Name'
     bio = 'Short bio'
     avatar = '/images/avatar.png'
-    twitter = 'https://x.com/you'   # 兼容 twitter 或 x 键
+    twitter = 'https://x.com/you'       # accepts either twitter or x key
 
-  [params.social]                   # footer 社交图标（未配置自动隐藏）
+  [params.social]                       # footer social icons (unset entries hidden)
     facebook = '...'
     twitter = '...'
     github = '...'
     instagram = '...'
 
-  [params.footer]                   # footer 文案
+  [params.footer]                       # footer copy
     tagline = '...'
     description = '...'
     # copyright = '© 2026 ...'
 
-  [params.banner]                   # 侧边栏广告位（可选）
+  [params.banner]                       # sidebar ad box (optional)
     image = '/images/banner.png'
     alt = '...'
 
-  [params.newsletter]               # 邮件订阅（配置 action 才显示）
+  [params.newsletter]                   # newsletter box (renders when action is set)
     title = '...'
     description = '...'
     action = 'https://example.com/subscribe'
     placeholder = 'Email...'
     button = 'Subscribe'
 
-  # Cookie 同意横幅（Google Consent Mode v2 宽松模式）
+  # Cookie consent banner (Google Consent Mode v2, relaxed mode)
   [params.consent]
-    position = 'bottom'             # 'top' | 'modal' | 'bottom'
+    position = 'bottom'                 # 'top' | 'modal' | 'bottom'
     title = 'We value your privacy'
     message = 'We use cookies to improve your experience and analyze site traffic.'
     accept = 'Accept all'
@@ -95,20 +97,20 @@ theme = 'pehtheme-hugo'
     privacy_policy = '/privacy-policy/'
     policy_label = 'Privacy policy'
 
-  # 统计 / 广告 / 标签管理 / 自定义脚本
+  # Analytics / ads / tag manager / custom scripts
   [params.scripts]
-    analytics = 'G-XXXXXXXX'        # GA4
-    gtm = 'GTM-XXXXXX'              # Google Tag Manager
-    adsense = 'ca-pub-XXXXXXXX'     # Google AdSense
-    head = []                       # 自定义 <head> 脚本
-    body = []                       # 自定义 </body> 脚本
+    analytics = 'G-XXXXXXXX'            # Google Analytics 4
+    gtm = 'GTM-XXXXXX'                  # Google Tag Manager
+    adsense = 'ca-pub-XXXXXXXX'         # Google AdSense
+    head = []                           # custom <head> scripts
+    body = []                           # custom </body> scripts
 
-  # 文内广告（每个 <h2> 前插入）
+  # Inline ad (inserted before every <h2>)
   [params.adsense]
     client = 'ca-pub-XXXXXXXX'
     inline_slot = '1234567890'
 
-  # 打赏按钮
+  # Donation button
   [params.donate]
     url = 'https://buymeacoffee.com/yourname'
     image = 'https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png'
@@ -116,53 +118,53 @@ theme = 'pehtheme-hugo'
 
   # SEO
   [params.seo]
-    noindex_taxonomy = true         # 分类/标签页 noindex
+    noindex_taxonomy = true             # noindex, follow on tag/category/section pages
 
-[menu]                              # 顶部菜单
+[menu]                                  # top navigation
   [[menu.main]]
     name = 'Home'
     pageRef = '/'
     weight = 10
-  [[menu.footer]]                   # footer 附加链接
+  [[menu.footer]]                       # footer extra links
     name = 'Privacy'
     pageRef = '/privacy-policy/'
     weight = 10
 ```
 
-## 页面类型
+## Page types
 
-| front matter `type` | 用途 | 模板 |
+| front matter `type` | Purpose | Template |
 |---|---|---|
-| （默认） | 文章 / 列表 | `_default/single.html`、`_default/list.html` |
-| `page` | 独立页（About / Contact / Privacy） | `page/single.html` |
-| `search` | 搜索页（复用 index.json） | `search/single.html` |
-| `archives` | 归档页（按年分组） | `archives/single.html` |
+| (default) | posts / lists | `_default/single.html`, `_default/list.html` |
+| `page` | standalone pages (About / Contact / Privacy) | `page/single.html` |
+| `search` | search page (reuses index.json) | `search/single.html` |
+| `archives` | yearly archives list | `archives/single.html` |
 
-首页置顶：给文章的 `tags` 加 `feature`（仅第一篇生效，自动从 Recent Post 排除）。
+Homepage feature post: add the `feature` tag to a post (only the first match is shown; it is excluded from Recent Post automatically).
 
-## 从 PaperMod 迁移
+## Migrating from PaperMod
 
-本主题对 PaperMod 内容做了兼容，迁移无需修改文章：
+PaperMod content is compatible without modification:
 
-- `cover.image`（Page bundle 相对路径或 URL）可直接作为封面使用，也支持标准 `image` 字段
-- `video` shortcode（`{{< video src="..." >}}`）内置支持
-- 旧 PaperMod 专属 front matter 字段（`showToc`、`canonicalURL` 等）会被安全忽略，可留可删
-- 分页、归档、搜索 URL 结构与 PaperMod 默认一致
+- `cover.image` (page-bundle relative path or URL) works as the post cover; the standard `image` field is also supported
+- The `video` shortcode (`{{< video src="..." >}}`) is built in
+- Legacy PaperMod-only front matter fields (`showToc`, `canonicalURL`, etc.) are safely ignored — keep or remove them
+- Pagination, archives and search URL structures match PaperMod defaults
 
-## 开发
+## Development
 
 ```bash
 cd exampleSite
 hugo server -D
 ```
 
-示例站配置了 `[module.mounts]` 将主题 `assets` 挂载为 `static`，便于本地开发。
+The example site mounts the theme `assets` into `static` via `[module.mounts]` for local development.
 
-## 致谢
+## Credits
 
-- 上游主题：[deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo)（作者 [fauzanmy](https://github.com/fauzanmy)），本仓库为其扩展维护版
-- 感谢上游的极简设计与 MIT 许可
+- Upstream theme: [deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo) by [fauzanmy](https://github.com/fauzanmy) — this repository is an extended, independently maintained version
+- Thanks to the upstream for the minimalist design and the MIT license
 
 ## License
 
-[MIT](LICENSE) — fork 自上游，保留原始许可。
+[MIT](LICENSE) — forked from upstream, original license retained.
