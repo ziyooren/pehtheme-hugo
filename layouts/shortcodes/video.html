@@ -1,0 +1,7 @@
+{{- /* HTML5 video shortcode.
+         Usage: {{< video src="path/to/file.mp4" >}}
+         The src is rendered as-is (page-bundle relative paths work). */ -}}
+{{- $src := .Get "src" -}}
+{{- with $src }}
+<video src="{{ . }}" controls muted preload="metadata"></video>
+{{- end }}
