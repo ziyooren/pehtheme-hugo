@@ -161,6 +161,34 @@ hugo server -D
 
 示例站配置了 `[module.mounts]` 将主题 `assets` 挂载为 `static`，便于本地开发。
 
+## 主题更新与站点升级
+
+### 发布主题新版本（维护者）
+
+```bash
+cd /path/to/pehtheme-hugo          # 主题仓库
+git add -A && git commit -m "..." && git push origin main
+git tag -a v1.1.0 -m "..." && git push origin v1.1.0   # 打版本标签
+```
+
+### 站点升级到新主题版本
+
+站点以 git submodule 方式安装主题，并固定到某个已发布的标签：
+
+```bash
+cd /path/to/site
+cd themes/pehtheme-hugo && git fetch --tags && git checkout v1.1.0
+cd ../.. && git add themes/pehtheme-hugo && git commit -m "Theme v1.1.0" && git push
+```
+
+站点的 CI（如 Cloudflare Pages 的 `.github/workflows/deploy.yml`）会自动重新构建并部署。如需先在本地验证，可先运行 `hugo server`。
+
+### 本地开发注意事项
+
+- 站点 submodule **固定到已发布的标签**——你在主题仓库里的本地改动（未提交/未发版）**不会**被站点构建使用。
+- 想在站点上预览未发布的主题：`hugo server --themesDir /path/to/theme-parent`（或临时在 submodule 内 `git checkout main`）。
+- 主题验证无误后，按上面的步骤打新标签并升级各站点。
+
 ## 致谢
 
 - 上游主题：[deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo)（作者 [fauzanmy](https://github.com/fauzanmy)），本仓库为其扩展维护版

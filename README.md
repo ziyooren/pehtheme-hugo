@@ -160,6 +160,34 @@ hugo server -D
 
 The example site mounts the theme `assets` into `static` via `[module.mounts]` for local development.
 
+## Updating the theme
+
+### Releasing a new theme version (maintainer)
+
+```bash
+cd /path/to/pehtheme-hugo          # theme repository
+git add -A && git commit -m "..." && git push origin main
+git tag -a v1.1.0 -m "..." && git push origin v1.1.0   # create a version tag
+```
+
+### Upgrading a site to a new theme version
+
+Sites install the theme as a git submodule pinned to a released tag:
+
+```bash
+cd /path/to/site
+cd themes/pehtheme-hugo && git fetch --tags && git checkout v1.1.0
+cd ../.. && git add themes/pehtheme-hugo && git commit -m "Theme v1.1.0" && git push
+```
+
+The site's CI (e.g. Cloudflare Pages via `.github/workflows/deploy.yml`) rebuilds and deploys automatically. Verify locally first with `hugo server` whenever you like.
+
+### Local development notes
+
+- Sites pin the submodule to a **released tag** — uncommitted local changes in your theme checkout are **not** used by the site build.
+- To preview a work-in-progress theme on a site: `hugo server --themesDir /path/to/theme-parent` (or temporarily `git checkout main` inside the submodule).
+- Once the theme looks good, tag a new version and upgrade sites with the steps above.
+
 ## Credits
 
 - Upstream theme: [deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo) by [fauzanmy](https://github.com/fauzanmy) — this repository is an extended, independently maintained version
