@@ -1,310 +1,168 @@
 # Pehtheme Hugo
 
-Pehtheme Hugo is an open-source Hugo theme inspired by [Material Design v3](https://m3.material.io/), lovingly crafted using Tailwind CSS.
+一个基于 [deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo) 二次开发、**独立维护**的 Hugo 极简博客主题。在保留原主题极简、高性能特性的基础上，针对生产环境做了大量扩展：Cookie 同意管理（Google Consent Mode v2）、统计/广告脚本注入、PaperMod 内容兼容、独立搜索/归档页面、文内广告、打赏按钮、SEO 增强等。
 
-![Preview Pehtheme Hugo](https://raw.githubusercontent.com/fauzanmy/pehtheme-hugo/main/images/tn.png?raw=true)
+由 [@ziyooren](https://github.com/ziyooren) 维护，实际用于 [theWindows12.com](https://www.thewindows12.com/) 与 [cnelecar.com](https://www.cnelecar.com/)。
 
-## Live Demo
+## 功能特性
 
-Check out the live demo: [Pehtheme Hugo Live Demo](https://pehtheme-hugo.netlify.app/)
+### 基础（源自上游）
+- Tailwind CSS 构建，无第三方 JS 依赖
+- 客户端搜索（index.json，无后端）
+- 首页置顶文章（`feature` 标签）+ 首页分类栏目 + Recent Post（自动排除置顶/栏目文章）
+- 顶部菜单、标签列表、侧边栏 Recent Post / 广告位
+- 双栏博客布局、语义化 HTML
 
-## Performance Testing
+### 扩展（本仓库新增）
+- **Cookie 同意横幅**（Google Consent Mode v2 宽松模式）：`top / modal / bottom` 三种位置，接受 / 拒绝 / 按类自定义，footer 可随时重新设置
+- **脚本注入**：GA4 / GTM / AdSense / 自定义 head/body 脚本，全部配置化
+- **PaperMod 内容兼容**：`cover.image` 封面字段、`video` shortcode、多实例搜索——从 PaperMod 迁移无需改内容
+- **独立 `/search/` 与 `/archives/` 页面**（`type: "search"` / `type: "archives"`）
+- **文内广告**：`<h2>` 前自动插入 AdSense 单元
+- **打赏按钮**（Buy Me a Coffee 等）
+- **Affiliate Disclosure** 链接（文章作者行）
+- **SEO 增强**：分类/标签页 noindex（保护抓取预算）、结构化数据按页面类型区分（WebSite / BlogPosting / WebPage / BreadcrumbList）、og/twitter 卡片完整输出、空 description 自动摘要兜底
+- 分页尊重全局 `pagerSize`；图片解析支持 远程 URL / page-bundle 资源 / assets 资源
 
-To assess the performance of your website using Pehtheme Hugo, utilize the PageSpeed Insights tool. Click the button below to run a PageSpeed Insights test:
+## 快速开始
 
-[PageSpeed Insights Test](https://pagespeed.web.dev/analysis/https-pehtheme-hugo-netlify-app/7gv9zedw83?form_factor=mobile)
+```bash
+# 作为 submodule 安装（推荐，便于更新）
+git submodule add https://github.com/ziyooren/pehtheme-hugo.git themes/pehtheme-hugo
 
-## Features
+# 最小配置 hugo.toml
+baseURL = 'https://example.com/'
+languageCode = 'en-us'   # 中文站用 zh-cn
+title = 'My Site'
+theme = 'pehtheme-hugo'
 
-- Built with Tailwind CSS
-- Client-side search (no backend, no third-party JS dependencies)
-- Featured posts displayed on the homepage (To showcase featured posts on the homepage, the Hugo theme uses `feature` tags data)
-- Horizontal menus, content tags list
-- No JavaScript dependencies
-- Vanilla JS toggle button
-- Two-column blog layout
-- Sidebar with a list of recent posts
-- Semantic HTML
-- Sidebar Ads box
-
-## Installation
-
-To get started with Pehtheme Hugo, follow these steps:
-
-1. Install Hugo and create a new site. For detailed instructions, refer to [Hugo's Quick Start Guide](https://gohugo.io/getting-started/quick-start/).
-
-2. Add Pehtheme Hugo to your project:
-
-    ```bash
-    $ git clone https://github.com/fauzanmy/pehtheme-hugo.git
-    ```
-
-3. Simply copy the following 2 folders and 1 content from the `exampleSite` directory to the root of your project:
-
-    ```bash
-    exampleSite/
-    ├── assets/
-    ├── content/
-    └── hugo.toml
-    ``` 
-
-4. Start Hugo:
-
-    ```bash
-    hugo server
-    ```
-
-## Configuration
-
-You can configure the following settings for your Hugo project
- by adding or modifying these lines in your config file `hugo.toml`:
-
-summaryLength = 20 # (approximately 160 characters for 20 words)
-
-[services]
-  [services.googleAnalytics]
-    id = 'G-MEASUREMENT_ID' # (Your GA-4 analytics code)
-
-  [services.disqus]
-    shortname = 'shortname' # (Your Disqus shortname)
-
-[pagination]
-  pagerSize = 10 # (Set the desired number of home posts per page)
-
-To display the author box on article pages, define the author under `params`:
-
-```toml
-[params.author]
-  name    = 'Your Name'            # (Shown in the article header and author box)
-  bio     = 'Short bio'            # (Shown in the author box)
-  avatar  = '/images/avatar.png'   # (Optional, shown next to the article title)
-  twitter = 'https://twitter.com/yourhandle'
+[params]
+  description = 'Site-wide meta description'
+  mainSections = ['posts']   # 文章 section（默认 posts；blog 站改为 ['blog']）
 ```
 
-To configure the social icons (in the footer and the article author box), define them under `params` — entries that are not set are hidden automatically:
+完整配置参考见 [exampleSite/hugo.toml](exampleSite/hugo.toml)（含全部可选配置的注释示例）。
 
-```toml
-[params.social]
-  facebook  = 'https://facebook.com/yourpage'
-  twitter   = 'https://twitter.com/yourhandle'
-  github    = 'https://github.com/yourname'
-  instagram = 'https://instagram.com/yourhandle'
-```
-
-To customize the footer text and copyright, use:
-
-```toml
-[params.footer]
-  tagline     = 'Your short tagline'                 # (Optional)
-  description = 'A longer description of your site'  # (Optional)
-  copyright   = '© 2026 Your Name. All rights reserved.' # (Optional; defaults to "Copyright © <year>")
-```
-
-To enable the newsletter box (the form only renders when `action` is set — point it at your subscription service, e.g. Buttondown or Mailchimp):
-
-```toml
-[params.newsletter]
-  title       = 'Stay In The Loop! Subscribe to Our Newsletter.'
-  description = 'Join our community...'
-  action      = 'https://buttondown.com/yourlist'
-  placeholder = 'Email...'
-  button      = 'Subscribe'
-```
-
-To replace the default egg-fried logo icon in the header with your own image:
+## 配置参考
 
 ```toml
 [params]
-  logo = '/images/logo.png'
-```
+  description = '...'
+  mainSections = ['posts']          # 首页 Recent Post / 搜索 / RSS 收录范围
+  logo = '/images/logo.png'         # 自定义 header logo（透明背景 PNG 友好）
+  og_image = '/images/default-og.png'   # 社交分享兜底图
+  home_category = 'News'            # 首页分类栏目（显示该分类 3 篇）
+  affiliate_disclosure = '/affiliate-disclosure/'  # 文章作者行 Affiliate 链接
+  affiliate_disclosure_label = 'Affiliate Disclosure'
 
-To show an affiliate disclosure link in the article author line (after the reading time), point it at your disclosure page:
+  [params.author]                   # 作者信息（作者框 / 结构化数据）
+    name = 'Your Name'
+    bio = 'Short bio'
+    avatar = '/images/avatar.png'
+    twitter = 'https://x.com/you'   # 兼容 twitter 或 x 键
 
-```toml
-[params]
-  affiliate_disclosure = '/affiliate-disclosure/'       # (Link is hidden when unset)
-  affiliate_disclosure_label = 'Affiliate Disclosure'   # (Optional; defaults to "Affiliate Disclosure")
-```
+  [params.social]                   # footer 社交图标（未配置自动隐藏）
+    facebook = '...'
+    twitter = '...'
+    github = '...'
+    instagram = '...'
 
-To load analytics, ads and tag-manager scripts, configure `params.scripts` (all optional). When `params.consent` is configured, the scripts run in Google Consent Mode v2 **relaxed mode**: they load on page open but only send basic information (storage types stay `denied`) until the visitor chooses via the banner:
+  [params.footer]                   # footer 文案
+    tagline = '...'
+    description = '...'
+    # copyright = '© 2026 ...'
 
-```toml
-[params.scripts]
-  analytics = 'G-MEASUREMENT_ID'          # Google Analytics 4
-  gtm       = 'GTM-XXXXXX'                # Google Tag Manager
-  adsense   = 'ca-pub-XXXXXXXXXXXXXXXX'   # Google AdSense
-  head      = ['<script>/* custom */</script>']  # Custom <head> scripts
-  body      = ['<script>/* custom */</script>']  # Custom </body> scripts
+  [params.banner]                   # 侧边栏广告位（可选）
+    image = '/images/banner.png'
+    alt = '...'
 
-[params.consent] # Cookie consent banner (rendered only when this section exists)
-  position = 'bottom'   # 'top' | 'modal' | 'bottom'
-  title = 'We value your privacy'
-  message = 'We use cookies to improve your experience and analyze site traffic.'
-  accept = 'Accept all'
-  decline = 'Decline'
-  settings = 'Cookie settings'
-  save = 'Save preferences'
-  privacy_policy = '/privacy-policy/'
-  policy_label = 'Privacy policy'
-```
+  [params.newsletter]               # 邮件订阅（配置 action 才显示）
+    title = '...'
+    description = '...'
+    action = 'https://example.com/subscribe'
+    placeholder = 'Email...'
+    button = 'Subscribe'
 
-Behaviour:
-- **First visit**: the banner appears; scripts keep storage `denied` (relaxed mode, basic info only).
-- **Accept all**: all storage types become `granted`.
-- **Decline**: storage stays `denied` (same as the pre-choice state), banner is dismissed.
-- **Cookie settings** (in the banner): opens a per-category checkbox panel; "Save preferences" applies the selection.
-- The footer shows a "Cookie settings" button while the banner is configured, letting visitors review or change their choice at any time — clicking it reopens the banner.
+  # Cookie 同意横幅（Google Consent Mode v2 宽松模式）
+  [params.consent]
+    position = 'bottom'             # 'top' | 'modal' | 'bottom'
+    title = 'We value your privacy'
+    message = 'We use cookies to improve your experience and analyze site traffic.'
+    accept = 'Accept all'
+    decline = 'Decline'
+    settings = 'Cookie settings'
+    save = 'Save preferences'
+    privacy_policy = '/privacy-policy/'
+    policy_label = 'Privacy policy'
 
-### Search & archives pages
+  # 统计 / 广告 / 标签管理 / 自定义脚本
+  [params.scripts]
+    analytics = 'G-XXXXXXXX'        # GA4
+    gtm = 'GTM-XXXXXX'              # Google Tag Manager
+    adsense = 'ca-pub-XXXXXXXX'     # Google AdSense
+    head = []                       # 自定义 <head> 脚本
+    body = []                       # 自定义 </body> 脚本
 
-Create standalone pages backed by theme templates (URLs like `/search/` and `/archives/`):
-
-```yaml
-# content/search.md
----
-title: "Search"
-type: "search"   # uses the theme search page (same index as the header search)
-placeholder: "What are you looking for?"
----
-
-# content/archives.md
----
-title: "Archives"
-type: "archives" # yearly grouped list of all posts
----
-```
-
-### Extra optional params
-
-```toml
-[params]
-  # Inline AdSense unit injected before every <h2> in article content
+  # 文内广告（每个 <h2> 前插入）
   [params.adsense]
-    client = 'ca-pub-XXXXXXXXXXXXXXXX'
+    client = 'ca-pub-XXXXXXXX'
     inline_slot = '1234567890'
 
-  # Donation / "Buy me a coffee" button under article content
+  # 打赏按钮
   [params.donate]
-    url   = 'https://buymeacoffee.com/yourname'
+    url = 'https://buymeacoffee.com/yourname'
     image = 'https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png'
-    text  = 'Buy Me a Coffee'
+    text = 'Buy Me a Coffee'
 
-  # Add noindex, follow to tag/category/section pages (preserve crawl budget)
+  # SEO
   [params.seo]
-    noindex_taxonomy = true
+    noindex_taxonomy = true         # 分类/标签页 noindex
 
-  # Footer extra links (About/Contact/Privacy) — rendered after the main menu
-  [menu.footer]
-    [[menu.footer]]
-      name = 'About'
-      pageRef = '/about/'
-      weight = 10
+[menu]                              # 顶部菜单
+  [[menu.main]]
+    name = 'Home'
+    pageRef = '/'
+    weight = 10
+  [[menu.footer]]                   # footer 附加链接
+    name = 'Privacy'
+    pageRef = '/privacy-policy/'
+    weight = 10
 ```
 
-Post images accept both `image` and PaperMod-style `cover.image` front matter keys.
+## 页面类型
 
-Comments are powered by Disqus — set your shortname in `hugo.toml`:
+| front matter `type` | 用途 | 模板 |
+|---|---|---|
+| （默认） | 文章 / 列表 | `_default/single.html`、`_default/list.html` |
+| `page` | 独立页（About / Contact / Privacy） | `page/single.html` |
+| `search` | 搜索页（复用 index.json） | `search/single.html` |
+| `archives` | 归档页（按年分组） | `archives/single.html` |
 
-```toml
-disqusShortname = 'your-disqus-shortname'
+首页置顶：给文章的 `tags` 加 `feature`（仅第一篇生效，自动从 Recent Post 排除）。
+
+## 从 PaperMod 迁移
+
+本主题对 PaperMod 内容做了兼容，迁移无需修改文章：
+
+- `cover.image`（Page bundle 相对路径或 URL）可直接作为封面使用，也支持标准 `image` 字段
+- `video` shortcode（`{{< video src="..." >}}`）内置支持
+- 旧 PaperMod 专属 front matter 字段（`showToc`、`canonicalURL` 等）会被安全忽略，可留可删
+- 分页、归档、搜索 URL 结构与 PaperMod 默认一致
+
+## 开发
+
+```bash
+cd exampleSite
+hugo server -D
 ```
 
-To generate a `robots.txt` that references your sitemap, enable it in your config:
+示例站配置了 `[module.mounts]` 将主题 `assets` 挂载为 `static`，便于本地开发。
 
-```toml
-enableRobotsTXT = true
-```
+## 致谢
 
-The theme also outputs canonical URLs, Open Graph / Twitter Card meta tags, and JSON-LD structured data (WebSite, BlogPosting, BreadcrumbList) automatically. The sitemap is generated by Hugo out of the box at `/sitemap.xml`.
-
-To create standalone pages (e.g. About, Contact, Privacy) without the blog post extras (comments, author box, related posts), set the page type in the front matter:
-
-```yaml
-type: "page"
-```
-
-## Search
-
-The built-in search is a client-side feature that filters a JSON index generated by Hugo — no backend or extra build step required.
-
-1. Enable JSON output for the home page in your config file `hugo.toml`:
-
-    ```toml
-    [outputs]
-      home = ["HTML", "RSS", "JSON"]
-    ```
-
-2. Click the search icon in the header, type a keyword, and results appear below the input as you type.
-
-To customize the homepage category section, set the category shown on the homepage:
-
-```toml
-[params]
-  home_category = 'astronomy' # (The category section featured on the homepage, defaults to "astronomy")
-```
-
-To configure the sidebar banner box instead of removing it, define it in `hugo.toml`:
-
-```toml
-[params.banner]
-  image = '/images/banner.png' # (Leave undefined to hide the banner box)
-  alt   = 'Your banner text'
-```
-
-## Custom Theme
-
-1. Ensure you have NodeJS installed on your desktop.
-
-2. Copy the Node.js configuration files from the `exampleSite` directory to the root of your Hugo project:
-
-    ```bash
-        exampleSite/
-        ├── package.json
-        ├── postcss.config.js
-        └── tailwind.config.js
-    ``` 
-
-3. Additionally, copy the `exampleSite/input.css` file to the `assets/input.css` directory of your Hugo project.
-
-4. Run the following command to install necessary dependencies:
-
-    ```bash
-    npm install
-    ```
-
-5. Customize the theme with Tailwind CSS using the following command:
-
-    ```bash
-    npm run dev
-    ```
-
-6. To build the website, execute the command:
-
-    ```bash
-    npm run build
-    ```
+- 上游主题：[deining/pehtheme-hugo](https://github.com/deining/pehtheme-hugo)（作者 [fauzanmy](https://github.com/fauzanmy)），本仓库为其扩展维护版
+- 感谢上游的极简设计与 MIT 许可
 
 ## License
 
-Pehtheme Hugo is MIT Licensed. For more details, see the [LICENSE](https://github.com/fauzanmy/pehtheme-hugo/blob/main/LICENSE) file.
-
-## Logo Icon
-
-Egg fried icon source: [Bootstrap Icons - Egg Fried](https://icons.getbootstrap.com/icons/egg-fried/)
-
-## Photo Credits
-
-Image credits used in the live preview:
-
-    ```
-    Images resource:
-    - https://unsplash.com/photos/Smeer5L0tXM
-    - https://unsplash.com/photos/2q6C5zDJOsg
-    - https://unsplash.com/photos/UNd3lRKhwSw
-    - https://unsplash.com/photos/Ed2AELHKYBw
-    - https://unsplash.com/photos/rTZW4f02zY8
-    - https://unsplash.com/photos/OtXJhYjbKeg
-    - https://unsplash.com/photos/ZPP-zP8HYG0
-    - https://unsplash.com/photos/ydGRmobx5jA
-    - https://pixabay.com/vectors/email-newsletter-email-marketing-3249062/
-    ```
+[MIT](LICENSE) — fork 自上游，保留原始许可。
