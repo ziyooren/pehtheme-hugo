@@ -5,7 +5,7 @@
            github    = 'https://github.com/yourname'
            instagram = 'https://instagram.com/yourhandle'
          Unset entries are omitted automatically. */ -}}
-<ul id="social-media" class="flex items-center space-x-4">
+<ul id="social-media" class="flex flex-wrap items-center gap-x-4 gap-y-2">
 	{{- with site.Params.social.facebook }}
 	<li>
 		<a class="w-12 h-12 rounded-full bg-white hover:bg-zinc-200 flex items-center justify-center p-2" href="{{ . }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">

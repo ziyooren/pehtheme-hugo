@@ -1,23 +1,30 @@
 {{ define "main" }}
 <div class="max-w-3xl mx-auto py-14">
 
-	<h1 class="text-4xl font-bold mb-8">{{ .Title }}</h1>
+	<h1 class="text-4xl font-bold mb-10">{{ .Title }}</h1>
 
 	{{- $sections := site.Params.mainSections | default (slice "posts") }}
 	{{- $pages := where site.RegularPages "Type" "in" $sections }}
 	{{- range $pages.GroupByDate "2006" "desc" }}
 
-	<h2 class="text-2xl font-bold mt-10 mb-4">{{ .Key }}</h2>
+	<!-- Year -->
+	<h2 class="text-3xl font-bold mt-12 mb-6 pb-2 border-b border-zinc-200">{{ .Key }}</h2>
+
+	{{- range .Pages.GroupByDate "January" }}
+
+	<!-- Month -->
+	<h3 class="text-base font-semibold uppercase tracking-widest text-zinc-500 mt-8 mb-3">{{ .Key }}</h3>
 
 	<ul>
 		{{- range .Pages }}
-		<li class="my-2">
-			<time class="text-sm text-zinc-500">{{ .Date.Format "Jan 02" }}</time>
-			<a class="font-bold hover:underline" href="{{ .Permalink }}">{{ .LinkTitle }}</a>
+		<li class="flex items-baseline gap-3 py-2 border-b border-zinc-100">
+			<time class="text-sm text-zinc-400 w-14 shrink-0">{{ .Date.Format "Jan 02" }}</time>
+			<a class="font-medium hover:text-blue-600 hover:underline decoration-auto" href="{{ .Permalink }}">{{ .LinkTitle }}</a>
 		</li>
 		{{- end }}
 	</ul>
 
+	{{- end }}
 	{{- end }}
 
 </div>
