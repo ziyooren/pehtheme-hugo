@@ -3,7 +3,7 @@
 <!-- Dynamic title for SEO -->
 <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
 <!-- Dynamic description for SEO -->
-<meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ .Params.description }}{{ end }}">
+<meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ or .Params.description (.Summary | plainify | truncate 160) }}{{ end }}">
 <!-- Noindex for taxonomy/section pages (preserve crawl budget) -->
 {{- if and site.Params.seo.noindex_taxonomy (or (eq .Kind "term") (eq .Kind "section")) }}
 <meta name="robots" content="noindex, follow">
