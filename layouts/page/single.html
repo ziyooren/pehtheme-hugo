@@ -2,7 +2,7 @@
 
 <div class="py-14">
 
-	{{- with .Params.image }}
+	{{- with .Params.image | default .Params.cover.image }}
 	<div class="mb-14">
 
 		{{- if strings.HasPrefix . "http" }}

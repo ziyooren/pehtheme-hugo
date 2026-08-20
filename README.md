@@ -155,6 +155,54 @@ Behaviour:
 - **Cookie settings** (in the banner): opens a per-category checkbox panel; "Save preferences" applies the selection.
 - The footer shows a "Cookie settings" button while the banner is configured, letting visitors review or change their choice at any time — clicking it reopens the banner.
 
+### Search & archives pages
+
+Create standalone pages backed by theme templates (URLs like `/search/` and `/archives/`):
+
+```yaml
+# content/search.md
+---
+title: "Search"
+type: "search"   # uses the theme search page (same index as the header search)
+placeholder: "What are you looking for?"
+---
+
+# content/archives.md
+---
+title: "Archives"
+type: "archives" # yearly grouped list of all posts
+---
+```
+
+### Extra optional params
+
+```toml
+[params]
+  # Inline AdSense unit injected before every <h2> in article content
+  [params.adsense]
+    client = 'ca-pub-XXXXXXXXXXXXXXXX'
+    inline_slot = '1234567890'
+
+  # Donation / "Buy me a coffee" button under article content
+  [params.donate]
+    url   = 'https://buymeacoffee.com/yourname'
+    image = 'https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png'
+    text  = 'Buy Me a Coffee'
+
+  # Add noindex, follow to tag/category/section pages (preserve crawl budget)
+  [params.seo]
+    noindex_taxonomy = true
+
+  # Footer extra links (About/Contact/Privacy) — rendered after the main menu
+  [menu.footer]
+    [[menu.footer]]
+      name = 'About'
+      pageRef = '/about/'
+      weight = 10
+```
+
+Post images accept both `image` and PaperMod-style `cover.image` front matter keys.
+
 Comments are powered by Disqus — set your shortname in `hugo.toml`:
 
 ```toml

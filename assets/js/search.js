@@ -1,13 +1,16 @@
 // Pehtheme Hugo search
 // Lightweight client-side search over the Hugo-generated index.json feed.
-// No third-party dependencies. Degrades gracefully when the feed is missing.
+// Supports multiple search forms per page (header bar + /search/ page):
+// any element with class "pehtheme-search-form" is wired up, using its
+// "pehtheme-search-input" child and the sibling "pehtheme-search-results"
+// container. No third-party dependencies. Degrades gracefully when the
+// feed is missing.
 (function () {
 	"use strict";
 
-	var BAR_ID = "search-bar";
-	var FORM_ID = "search";
-	var INPUT_ID = "search-input";
-	var RESULTS_ID = "search-results";
+	var FORM_SELECTOR = ".pehtheme-search-form";
+	var INPUT_SELECTOR = ".pehtheme-search-input";
+	var RESULTS_SELECTOR = ".pehtheme-search-results";
 	var MAX_RESULTS = 10;
 	var DEBOUNCE_MS = 250;
 
@@ -18,15 +21,15 @@
 	   here (the theme ships a prebuilt main.css). */
 	var styleEl = document.createElement("style");
 	styleEl.textContent = [
-		"#" + RESULTS_ID + " { margin-top: .75rem; border: 1px solid #e4e4e7; border-radius: 1rem; background: #ffffff; overflow: hidden; }",
-		"#" + RESULTS_ID + " .search-result { display: block; padding: .875rem 1.25rem; text-decoration: none; border-bottom: 1px solid #f4f4f5; }",
-		"#" + RESULTS_ID + " .search-result:last-child { border-bottom: 0; }",
-		"#" + RESULTS_ID + " .search-result:hover { background: #eff6ff; }",
-		"#" + RESULTS_ID + " .search-result mark { background: #bfdbfe; border-radius: .25rem; padding: 0 .125rem; }",
-		"#" + RESULTS_ID + " .search-result-title { font-weight: 700; font-size: 1rem; color: #18181b; line-height: 1.4; }",
-		"#" + RESULTS_ID + " .search-result-meta { margin-top: .25rem; font-size: .8125rem; color: #71717a; }",
-		"#" + RESULTS_ID + " .search-result-desc { margin-top: .25rem; font-size: .875rem; color: #52525b; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }",
-		"#" + RESULTS_ID + " .search-status { padding: 1rem 1.25rem; color: #71717a; font-size: .875rem; }"
+		"." + RESULTS_SELECTOR.slice(1) + " { margin-top: .75rem; border: 1px solid #e4e4e7; border-radius: 1rem; background: #ffffff; overflow: hidden; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-result { display: block; padding: .875rem 1.25rem; text-decoration: none; border-bottom: 1px solid #f4f4f5; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-result:last-child { border-bottom: 0; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-result:hover { background: #eff6ff; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-result mark { background: #bfdbfe; border-radius: .25rem; padding: 0 .125rem; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-result-title { font-weight: 700; font-size: 1rem; color: #18181b; line-height: 1.4; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-result-meta { margin-top: .25rem; font-size: .8125rem; color: #71717a; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-result-desc { margin-top: .25rem; font-size: .875rem; color: #52525b; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }",
+		"." + RESULTS_SELECTOR.slice(1) + " .search-status { padding: 1rem 1.25rem; color: #71717a; font-size: .875rem; }"
 	].join("\n");
 	document.head.appendChild(styleEl);
 
@@ -73,10 +76,7 @@
 		return out;
 	}
 
-	function renderResults(results, terms) {
-		var container = document.getElementById(RESULTS_ID);
-		if (!container) return;
-
+	function renderResults(container, results, terms) {
 		if (!results.length) {
 			container.innerHTML = '<div class="search-status">No results found for "' + escapeHtml(terms.join(" ")) + '".</div>';
 			container.hidden = false;
@@ -103,19 +103,15 @@
 		container.hidden = false;
 	}
 
-	function runSearch(query) {
-		var container = document.getElementById(RESULTS_ID);
-		if (!container) return;
-
-		var trimmed = query.trim();
+	function runSearch(form, input, container) {
+		var trimmed = input.value.trim();
 		if (!trimmed) {
 			container.innerHTML = "";
 			container.hidden = true;
 			return;
 		}
 
-		var form = document.getElementById(FORM_ID);
-		var indexUrl = form ? form.getAttribute("data-index") : null;
+		var indexUrl = form.getAttribute("data-index");
 		if (!indexUrl) {
 			container.innerHTML = '<div class="search-status">Search is not configured.</div>';
 			container.hidden = false;
@@ -124,7 +120,7 @@
 
 		var terms = trimmed.toLowerCase().split(/\s+/).filter(Boolean);
 		loadIndex(indexUrl).then(function (items) {
-			renderResults(searchIndex(items, trimmed), terms);
+			renderResults(container, searchIndex(items, trimmed), terms);
 		}).catch(function () {
 			container.innerHTML =
 				'<div class="search-status">Search is unavailable. Make sure the home page outputs JSON: add <code>[outputs]</code> with <code>home = ["HTML", "RSS", "JSON"]</code> to your site config.</div>';
@@ -133,34 +129,37 @@
 	}
 
 	function init() {
-		var form = document.getElementById(FORM_ID);
-		var input = document.getElementById(INPUT_ID);
-		if (!form || !input) return;
+		document.querySelectorAll(FORM_SELECTOR).forEach(function (form) {
+			var input = form.querySelector(INPUT_SELECTOR);
+			var container = form.parentNode.querySelector(RESULTS_SELECTOR);
+			if (!input || !container) return;
 
-		form.addEventListener("submit", function (e) {
-			e.preventDefault();
-			runSearch(input.value);
+			form.addEventListener("submit", function (e) {
+				e.preventDefault();
+				runSearch(form, input, container);
+			});
+
+			var timer = null;
+			input.addEventListener("input", function () {
+				clearTimeout(timer);
+				timer = setTimeout(function () { runSearch(form, input, container); }, DEBOUNCE_MS);
+			});
+
+			input.addEventListener("keydown", function (e) {
+				if (e.key === "Escape") {
+					input.value = "";
+					runSearch(form, input, container);
+					input.blur();
+				}
+			});
 		});
 
-		var timer = null;
-		input.addEventListener("input", function () {
-			clearTimeout(timer);
-			timer = setTimeout(function () { runSearch(input.value); }, DEBOUNCE_MS);
-		});
-
-		input.addEventListener("keydown", function (e) {
-			if (e.key === "Escape") {
-				input.value = "";
-				runSearch("");
-				input.blur();
-			}
-		});
-
-		// Focus the input when the search bar is expanded via the header toggle.
-		document.querySelectorAll('.toggle-button[data-target="' + BAR_ID + '"]').forEach(function (btn) {
+		// Focus the header input when the search bar is expanded via the toggle.
+		document.querySelectorAll('.toggle-button[data-target="search-bar"]').forEach(function (btn) {
 			btn.addEventListener("click", function () {
-				var bar = document.getElementById(BAR_ID);
-				if (bar && bar.classList.contains("open")) {
+				var bar = document.getElementById("search-bar");
+				var input = bar && bar.querySelector(INPUT_SELECTOR);
+				if (bar && bar.classList.contains("open") && input) {
 					input.focus();
 				}
 			});

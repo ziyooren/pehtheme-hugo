@@ -53,15 +53,15 @@
 
     <figure id="featureimage" class="rounded-xl aspect-video">
 
-      {{- if .Params.image }}
+      {{- with $postImage := .Params.image | default .Params.cover.image }}
 
-        {{- if ( strings.HasPrefix .Params.image "http" ) }}
+        {{- if ( strings.HasPrefix $postImage "http" ) }}
 
-          <img class="rounded-lg" src="{{ .Params.image }}" alt="{{ .Params.title }}">
+          <img class="rounded-lg" src="{{ $postImage }}" alt="{{ .Params.title }}">
 
         {{- else }}
 
-          {{- with $image := resources.Get .Params.image }}
+          {{- with $image := resources.Get $postImage }}
             {{- $image := $image.Resize "750x" }}
             <img class="rounded-lg" src="{{ $image.Permalink }}" alt="{{ .Params.title }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
           {{- end }}
@@ -79,13 +79,28 @@
     <div id="content" class="mb-14">
       <!-- Content -->
 
-      {{- .Content -}}
+      {{- $content := .Content -}}
+      {{- with site.Params.adsense }}
+        {{- if and .client .inline_slot }}
+          {{- $ad := printf `<div class="ad-before-h2"><ins class="adsbygoogle" style="display:block" data-ad-client="%s" data-ad-slot="%s" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>` .client .inline_slot -}}
+          {{- $content = $content | replaceRE "<h2 " (printf "%s<h2 " $ad) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $content | safeHTML -}}
 
       <!-- Tags list -->
 
       {{- partial "terms.html" (dict "taxonomy" "tags" "page" .) -}}
 
     </div>
+
+    {{- with site.Params.donate }}
+    <div style="text-align: center; margin: 2.5rem 0 1.5rem;">
+      <a href="{{ .url }}" target="_blank" rel="noopener noreferrer">
+        <img src="{{ .image | default "https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" }}" alt="{{ .text | default "Buy Me a Coffee" }}" style="height: 50px; width: auto;" loading="lazy">
+      </a>
+    </div>
+    {{- end }}
 
     <footer id="content-footer" class="not-prose">
 
