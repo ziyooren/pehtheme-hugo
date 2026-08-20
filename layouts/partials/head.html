@@ -18,15 +18,7 @@
 {{- /* Resolve the social share image: remote URL, local resource, or site default. */ -}}
 {{- $ogImage := site.Params.og_image | default "" -}}
 {{- with .Params.image | default .Params.cover.image -}}
-  {{- if strings.HasPrefix . "http" -}}
-    {{- $ogImage = . -}}
-  {{- else -}}
-    {{- with $img := resources.Get . -}}
-      {{- $ogImage = $img.Permalink -}}
-    {{- else -}}
-      {{- $ogImage = . | absURL -}}
-    {{- end -}}
-  {{- end -}}
+  {{- $ogImage = partial "content/image-url.html" (dict "page" $ "path" .) -}}
 {{- end -}}
 
 <!-- Open Graph -->

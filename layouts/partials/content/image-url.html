@@ -1,0 +1,30 @@
+{{- /* Resolve a post image to its best URL.
+         Supports: remote URL, page-bundle resource, global (assets) resource.
+         @param (dict "page" <page> "path" <image path> "process" <optional, e.g. "resize 750x">)
+         @return <url string> */ -}}
+{{- $page := .page -}}
+{{- $path := .path -}}
+{{- $process := .process | default "" -}}
+{{- $url := "" -}}
+{{- if strings.HasPrefix $path "http" -}}
+  {{- $url = $path -}}
+{{- else -}}
+  {{- $res := "" -}}
+  {{- with $page.Resources.GetMatch $path -}}
+    {{- $res = . -}}
+  {{- else -}}
+    {{- with resources.Get $path -}}
+      {{- $res = . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $res -}}
+    {{- if $process -}}
+      {{- $url = (.Process $process).Permalink -}}
+    {{- else -}}
+      {{- $url = .Permalink -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $url = $path | absURL -}}
+  {{- end -}}
+{{- end -}}
+{{- return $url -}}

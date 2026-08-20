@@ -5,17 +5,9 @@
 	{{- with .Params.image | default .Params.cover.image }}
 	<div class="mb-14">
 
-		{{- if strings.HasPrefix . "http" }}
+		{{- $imgURL := partial "content/image-url.html" (dict "page" $ "path" .) }}
 
-		<img class="rounded-3xl" src="{{ . }}" alt="{{ $.Title }}">
-
-		{{- else }}
-
-		{{- with $img := resources.Get . }}
-		<img class="rounded-3xl" src="{{ $img.RelPermalink }}" alt="{{ $.Title }}" width="{{ $img.Width }}" height="{{ $img.Height }}">
-		{{- end }}
-
-		{{- end }}
+		<img class="rounded-3xl" src="{{ $imgURL }}" alt="{{ $.Title }}">
 
 	</div>
 	{{- end }}

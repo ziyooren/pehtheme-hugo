@@ -55,18 +55,9 @@
 
       {{- with $postImage := .Params.image | default .Params.cover.image }}
 
-        {{- if ( strings.HasPrefix $postImage "http" ) }}
+        {{- $imgURL := partial "content/image-url.html" (dict "page" $ "path" $postImage "process" "resize 750x") }}
 
-          <img class="rounded-lg" src="{{ $postImage }}" alt="{{ .Params.title }}">
-
-        {{- else }}
-
-          {{- with $image := resources.Get $postImage }}
-            {{- $image := $image.Resize "750x" }}
-            <img class="rounded-lg" src="{{ $image.Permalink }}" alt="{{ .Params.title }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
-          {{- end }}
-
-        {{- end }}
+        <img class="rounded-lg" src="{{ $imgURL }}" alt="{{ $.Params.title }}">
 
       {{- end }}
 

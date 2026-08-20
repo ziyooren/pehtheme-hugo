@@ -4,18 +4,9 @@
 
 		{{- with $postImage := .Params.image | default .Params.cover.image }}
 
-		  {{- if (strings.HasPrefix $postImage "http") }}
+		  {{- $imgURL := partial "content/image-url.html" (dict "page" $ "path" $postImage "process" "crop 250x250 center") }}
 
-		  <img class="object-cover h-full w-full group-hover:scale-105 transition duration-500 cursor-pointer" src="{{ $postImage }}" alt="{{ $.Name }}" style="width: 100%; height: 100%; object-fit: cover;">
-
-		  {{- else }}
-
-			{{- with $imglist := resources.Get $postImage -}}
-			  {{- $imglist := $imglist.Crop "250x250 Center" -}}
-			  <img class="object-cover h-full w-full group-hover:scale-105 transition duration-500 cursor-pointer" src="{{ $imglist.Permalink }}" alt="{{ $.Name }}" width="{{ $imglist.Width }}" height="{{ $imglist.Height }}">
-			{{- end }}
-
-		  {{- end }}
+		  <img class="object-cover h-full w-full group-hover:scale-105 transition duration-500 cursor-pointer" src="{{ $imgURL }}" alt="{{ $.Name }}" style="width: 100%; height: 100%; object-fit: cover;">
 
 		{{- end }}
 
