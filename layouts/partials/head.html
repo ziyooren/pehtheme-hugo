@@ -17,8 +17,12 @@
 
 {{- /* Resolve the social share image: remote URL, local resource, or site default.
        Local resources are downscaled/compressed so social scrapers (X/Twitter,
-       Facebook) can fetch them fast and reliably. */ -}}
+       Facebook) can fetch them fast and reliably. og_image may be a relative
+       path and is absolutized here (scrapers require absolute URLs). */ -}}
 {{- $ogImage := site.Params.og_image | default "" -}}
+{{- if and $ogImage (not (strings.HasPrefix $ogImage "http")) -}}
+  {{- $ogImage = $ogImage | absURL -}}
+{{- end -}}
 {{- with .Params.image | default .Params.cover.image -}}
   {{- if strings.HasPrefix . "http" -}}
     {{- $ogImage = . -}}
