@@ -43,6 +43,10 @@
 
     <p class="text-sm">{{ site.Params.footer.copyright | default (printf "Copyright © %d. All rights reserved." now.Year) }}</p>
 
+    {{- with site.Params.consent }}
+    <button type="button" class="text-sm cursor-pointer mt-2" style="text-decoration: underline;" data-consent-open>{{ .settings | default "Cookie settings" }}</button>
+    {{- end }}
+
   </div>
 
 </div>

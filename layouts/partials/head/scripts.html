@@ -1,0 +1,43 @@
+{{- /* Analytics / ads / tag manager / custom scripts.
+         Configure via site config:
+           [params.scripts]
+             analytics = 'G-XXXXXXXX'   # Google Analytics 4 measurement ID (optional)
+             gtm       = 'GTM-XXXXXX'   # Google Tag Manager container ID (optional)
+             adsense   = 'ca-pub-XXXX'  # Google AdSense publisher ID (optional)
+             head      = ['<script>...</script>']   # Custom scripts injected into <head>
+             body      = ['<script>...</script>']   # Custom scripts injected before </body>
+         With [params.consent] configured, Consent Mode defaults are pushed
+         before any tag loads (relaxed mode: scripts run with storage denied
+         until the user opts in via the banner). */ -}}
+{{- $s := site.Params.scripts | default dict -}}
+{{- $consent := site.Params.consent | default dict -}}
+{{- if or $s.analytics $s.gtm $s.adsense $consent }}
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+{{- if $consent }}
+gtag('consent', 'default', {
+  'analytics_storage': 'denied',
+  'ad_storage': 'denied',
+  'personalization_storage': 'denied',
+  'functionality_storage': 'denied',
+  'ad_user_data': 'denied',
+  'ad_personalization': 'denied'
+});
+{{- end }}
+{{- with $s.analytics }}gtag('config', '{{ . }}');{{ end }}
+</script>
+{{- end }}
+
+{{- with $s.gtm }}
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','{{ . }}');</script>
+{{- end }}
+
+{{- with $s.adsense }}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ . }}" crossorigin="anonymous"></script>
+{{- end }}
+
+{{- range $s.head }}
+{{ . | safeHTML }}
+{{- end }}

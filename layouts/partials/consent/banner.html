@@ -1,0 +1,38 @@
+{{- /* Cookie consent banner (Google Consent Mode v2, relaxed mode).
+         Rendered only when [params.consent] is configured:
+           position      = 'top' | 'modal' | 'bottom'   (default 'bottom')
+           title         = 'We value your privacy'
+           message       = 'We use cookies to improve your experience and analyze traffic.'
+           accept        = 'Accept all'
+           decline       = 'Decline'
+           settings      = 'Cookie settings'
+           save          = 'Save preferences'
+           privacy_policy = '/privacy-policy/'           (optional link in the message)
+         Storage defaults stay "denied" until the user chooses; the banner is
+         managed by assets/js/consent.js. */ -}}
+{{- $c := site.Params.consent | default dict -}}
+{{- with $c }}
+{{- $position := .position | default "bottom" }}
+<div id="consent-banner" data-position="{{ $position }}" role="dialog" aria-label="{{ .title | default "Cookie consent" }}" hidden>
+	<div class="consent-overlay"></div>
+	<div class="consent-panel">
+		<h2 class="consent-title">{{ .title | default "We value your privacy" }}</h2>
+		<p class="consent-message">
+			{{ .message | default "We use cookies to improve your experience and analyze site traffic. You can accept all cookies, decline, or customize your preferences." }}
+			{{- with .privacy_policy }} <a href="{{ . | relURL }}" target="_blank" rel="noopener">{{ site.Params.consent.policy_label | default "Privacy policy" }}</a>{{ end }}
+		</p>
+		<div class="consent-actions">
+			<button type="button" class="consent-btn consent-btn-primary" data-consent="accept">{{ .accept | default "Accept all" }}</button>
+			<button type="button" class="consent-btn" data-consent="decline">{{ .decline | default "Decline" }}</button>
+			<button type="button" class="consent-btn consent-btn-link" data-consent="toggle-settings">{{ .settings | default "Cookie settings" }}</button>
+		</div>
+		<div class="consent-settings" hidden>
+			<label><input type="checkbox" data-consent-cat="analytics_storage" checked> Analytics cookies</label>
+			<label><input type="checkbox" data-consent-cat="ad_storage" checked> Advertising cookies</label>
+			<label><input type="checkbox" data-consent-cat="personalization_storage" checked> Personalization</label>
+			<label><input type="checkbox" data-consent-cat="functionality_storage" checked> Functionality</label>
+			<button type="button" class="consent-btn consent-btn-primary" data-consent="save">{{ .save | default "Save preferences" }}</button>
+		</div>
+	</div>
+</div>
+{{- end }}

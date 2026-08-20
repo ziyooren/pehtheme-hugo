@@ -126,6 +126,35 @@ To show an affiliate disclosure link in the article author line (after the readi
   affiliate_disclosure_label = 'Affiliate Disclosure'   # (Optional; defaults to "Affiliate Disclosure")
 ```
 
+To load analytics, ads and tag-manager scripts, configure `params.scripts` (all optional). When `params.consent` is configured, the scripts run in Google Consent Mode v2 **relaxed mode**: they load on page open but only send basic information (storage types stay `denied`) until the visitor chooses via the banner:
+
+```toml
+[params.scripts]
+  analytics = 'G-MEASUREMENT_ID'          # Google Analytics 4
+  gtm       = 'GTM-XXXXXX'                # Google Tag Manager
+  adsense   = 'ca-pub-XXXXXXXXXXXXXXXX'   # Google AdSense
+  head      = ['<script>/* custom */</script>']  # Custom <head> scripts
+  body      = ['<script>/* custom */</script>']  # Custom </body> scripts
+
+[params.consent] # Cookie consent banner (rendered only when this section exists)
+  position = 'bottom'   # 'top' | 'modal' | 'bottom'
+  title = 'We value your privacy'
+  message = 'We use cookies to improve your experience and analyze site traffic.'
+  accept = 'Accept all'
+  decline = 'Decline'
+  settings = 'Cookie settings'
+  save = 'Save preferences'
+  privacy_policy = '/privacy-policy/'
+  policy_label = 'Privacy policy'
+```
+
+Behaviour:
+- **First visit**: the banner appears; scripts keep storage `denied` (relaxed mode, basic info only).
+- **Accept all**: all storage types become `granted`.
+- **Decline**: storage stays `denied` (same as the pre-choice state), banner is dismissed.
+- **Cookie settings** (in the banner): opens a per-category checkbox panel; "Save preferences" applies the selection.
+- The footer shows a "Cookie settings" button while the banner is configured, letting visitors review or change their choice at any time — clicking it reopens the banner.
+
 Comments are powered by Disqus — set your shortname in `hugo.toml`:
 
 ```toml

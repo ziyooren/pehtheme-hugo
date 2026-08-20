@@ -1,51 +1,119 @@
-baseURL = 'https://pehtheme-hugo.netlify.app/'
-languageCode = 'en-us'
-title = 'Pehtheme'
-theme = 'pehtheme-hugo'
+# =============================================================================
+# Pehtheme Hugo — example site configuration
+# -----------------------------------------------------------------------------
+# Copy this file to the root of your Hugo site (or use it as a reference when
+# filling in hugo.toml), then replace the sample values with your own. Lines
+# starting with "#" are comments / optional settings — uncomment to enable.
+# =============================================================================
 
-summaryLength = '20' # <- 20 words are approximately 160 characters
-googleAnalytics = 'G-MEASUREMENT_ID' # <- Your GA-4
-disqusShortname = 'your-disqus-shortname' # <- Get form here : https://disqus.com
-enableRobotsTXT = true # <- Generate robots.txt with a sitemap reference
+# -----------------------------------------------------------------------------
+# Basic site settings (required)
+# -----------------------------------------------------------------------------
+baseURL = 'https://pehtheme-hugo.netlify.app/' # <- Your production domain, e.g. 'https://example.com/'
+languageCode = 'en-us' # <- Site language
+title = 'Pehtheme' # <- Site title, shown in the header/footer and browser tab
+theme = 'pehtheme-hugo' # <- Theme name (keep as-is)
 
+# -----------------------------------------------------------------------------
+# SEO & third-party integrations
+# -----------------------------------------------------------------------------
+summaryLength = '20' # <- Summary length in words (~160 characters, matches the meta description)
+googleAnalytics = 'G-MEASUREMENT_ID' # <- Your GA-4 measurement ID (legacy form, see [services] below)
+disqusShortname = 'your-disqus-shortname' # <- Disqus shortname, get one at https://disqus.com
+enableRobotsTXT = true # <- Generate a robots.txt that references the sitemap
+
+# -----------------------------------------------------------------------------
+# Theme params [params]: all visible site customizations live here
+# -----------------------------------------------------------------------------
 [params]
-	# Meta description, not exceeding 160 characters, used for the meta description within the HTML head
+	# Site-wide meta description (keep under 160 characters); used for the homepage <meta name="description">
 	description = 'Pehtheme Hugo Lite: A minimalist Hugo theme, built with TailwindCSS, for efficient performance and minimalism.'
+	# Main content section(s): which pages feed the homepage "Recent Post" list, search and RSS
 	mainSections = 'posts'
-	# logo = '/images/logo.png' # <- Optional: replace the default egg-fried icon in the header
-	# affiliate_disclosure = '/affiliate-disclosure/' # <- Optional: shows an "Affiliate Disclosure" link in the article author line
-	# affiliate_disclosure_label = 'Affiliate Disclosure' # <- Optional: custom link text (defaults to "Affiliate Disclosure")
 
+	# ---- Optional settings below: uncomment and fill in to enable ----
+
+	# Custom logo image replacing the default egg-fried icon in the header, e.g. '/images/logo.png'
+	# logo = '/images/logo.png'
+
+	# Fallback social share image (og:image / twitter:image) used when a post has no image
+	# og_image = '/images/default-og.png'
+
+	# Homepage category section: which category is featured on the homepage (default 'astronomy', single section only)
+	# home_category = 'astronomy'
+
+	# Affiliate disclosure link at the end of the article author line, e.g. '/affiliate-disclosure/'
+	# affiliate_disclosure = '/affiliate-disclosure/'
+	# affiliate_disclosure_label = 'Affiliate Disclosure' # <- Optional link text (defaults to "Affiliate Disclosure")
+
+	# ---- Author (article author box / header avatar) ----
 	[params.author]
-		name = 'Anthony Arphan'
-		bio = 'Debitis assumenda esse dignissimos aperiam delectus maxime tenetur repudiandae dolore'
-		avatar = '/images/nasa-astronaut-unsplash.jpg'
+		name = 'Anthony Arphan' # <- Author name
+		bio = 'Debitis assumenda esse dignissimos aperiam delectus maxime tenetur repudiandae dolore' # <- Short bio
+		avatar = '/images/nasa-astronaut-unsplash.jpg' # <- Avatar (asset path or full URL)
 		twitter = 'https://twitter.com/insertapps'
 
-	[params.social] # Social links; unset entries are hidden
+	# ---- Social links (footer round icons + article author box; unset entries are hidden) ----
+	[params.social]
 		facebook = 'https://facebook.com/insertapps'
 		twitter = 'https://twitter.com/insertapps'
 		github = 'https://github.com/insertapps'
 		instagram = 'https://instagram.com/insertapps'
 
+	# ---- Footer text & copyright ----
 	[params.footer]
-		tagline = 'Write with love. Minimalism design. Clean code and built in Rembele, Gayo Highland.'
-		description = 'A minimalist Hugo blog theme with clean code and efficient performance.'
-		# copyright = '© 2026 Your Name. All rights reserved.' # <- Defaults to "Copyright © <year>. All rights reserved."
+		tagline = 'Write with love. Minimalism design. Clean code and built in Rembele, Gayo Highland.' # <- Optional tagline
+		description = 'A minimalist Hugo blog theme with clean code and efficient performance.' # <- Optional description paragraph
+		# copyright = '© 2026 Your Name. All rights reserved.' # <- Custom copyright (defaults to "Copyright © <year>")
 
-	[params.newsletter] # Newsletter box; the form only renders when "action" is set
+	# ---- Sidebar banner box (optional; rendered only when configured) ----
+	# [params.banner]
+	# 	image = '/images/banner.png' # <- Banner image
+	# 	alt = 'Your banner text' # <- Image alt text
+
+	# ---- Newsletter box (optional; the form only renders when "action" is set) ----
+	[params.newsletter]
 		title = 'Stay In The Loop! Subscribe to Our Newsletter.'
 		description = 'Join our community of enthusiasts and stay informed. Just enter your email below and we will make sure you are always in the know!'
-		action = 'https://example.com/subscribe' # <- Replace with your subscribe endpoint (e.g. Buttondown, Mailchimp)
+		action = 'https://example.com/subscribe' # <- Subscribe form endpoint (Buttondown / Mailchimp, etc.)
 		placeholder = 'Email...'
 		button = 'Subscribe'
 
+	# ---- Cookie consent banner (Google Consent Mode v2, relaxed mode; optional) ----
+	# Relaxed mode: analytics/ads scripts load on page open but keep storage
+	# "denied" (basic info only) until the visitor chooses via the banner.
+	# The banner is enabled only when [params.consent] exists.
+	# [params.consent]
+	# 	position = 'bottom' # <- 'top' (top of page) | 'modal' (center dialog) | 'bottom' (bottom of page, default)
+	# 	title = 'We value your privacy'
+	# 	message = 'We use cookies to improve your experience and analyze site traffic. You can accept all cookies, decline, or customize your preferences.'
+	# 	accept = 'Accept all'
+	# 	decline = 'Decline'
+	# 	settings = 'Cookie settings' # <- Opens the per-category checkboxes in the banner
+	# 	save = 'Save preferences'
+	# 	privacy_policy = '/privacy-policy/' # <- Optional privacy policy link in the message
+	# 	policy_label = 'Privacy policy'
+
+	# ---- Analytics / ads / tag manager / custom scripts (all optional) ----
+	# [params.scripts]
+	# 	analytics = 'G-MEASUREMENT_ID' # <- Google Analytics 4
+	# 	gtm = 'GTM-XXXXXX' # <- Google Tag Manager
+	# 	adsense = 'ca-pub-XXXXXXXXXXXXXXXX' # <- Google AdSense
+	# 	head = [] # <- Custom scripts injected into <head> (e.g. ['"<script>...</script>"'])
+	# 	body = [] # <- Custom scripts injected before </body>
+
+# -----------------------------------------------------------------------------
+# Pagination & output formats
+# -----------------------------------------------------------------------------
 [pagination]
-	pagerSize = 6 # <- Set the desired number of posts per page 
+	pagerSize = 6 # <- Posts per page on the homepage and list pages
 
 [outputs]
-	home = ["HTML", "RSS", "JSON"] # <- JSON enables the built-in search feature
+	home = ["HTML", "RSS", "JSON"] # <- JSON powers the built-in search; keep it
 
+# -----------------------------------------------------------------------------
+# Top navigation menu
+# -----------------------------------------------------------------------------
 [menu] # Menu management
 	[[menu.main]]
 		name = 'Home'
@@ -64,6 +132,69 @@ enableRobotsTXT = true # <- Generate robots.txt with a sitemap reference
 		pageRef = '/tags/space/'
 		weight = 25
 
+# -----------------------------------------------------------------------------
+# Optional Hugo settings below (commented examples, uncomment as needed)
+# -----------------------------------------------------------------------------
+
+# ---- Modern [services] form of GA / Disqus (equivalent to the legacy keys above) ----
+# [services]
+# 	[services.googleAnalytics]
+# 		id = 'G-MEASUREMENT_ID'
+# 	[services.disqus]
+# 		shortname = 'your-disqus-shortname'
+
+# ---- Hugo built-in privacy settings (pair well with Consent Mode) ----
+# [privacy.googleAnalytics]
+# 	disable = false
+# 	respectDoNotTrack = true # <- Honor browser DNT/GPC signals
+# 	anonymizeIP = true # <- Anonymize visitor IPs
+# [privacy.disqus]
+# 	disable = false
+# [privacy.instagram]
+# 	disable = false
+# 	simple = true # <- Do not load third-party JavaScript
+# [privacy.twitter]
+# 	disable = false
+# 	enableDNT = true
+# 	simple = true
+# [privacy.vimeo]
+# 	disable = false
+# 	simple = true
+# [privacy.youtube]
+# 	disable = false
+# 	privacyEnhanced = true # <- YouTube privacy-enhanced mode
+
+# ---- Sitemap settings (defaults are fine; tune if needed) ----
+# [sitemap]
+# 	changefreq = 'weekly'
+# 	priority = 0.5
+# 	filename = 'sitemap.xml'
+
+# ---- Custom URL structure (note: changes post URLs, adjust content layout accordingly) ----
+# [permalinks]
+# 	posts = '/blog/:year/:month/:slug/'
+
+# ---- Related posts configuration (article page "Recommended for You") ----
+# [related]
+# 	includeNewer = false
+# 	threshold = 80
+# 	[[related.indices]]
+# 		name = 'tags'
+# 		weight = 80
+# 	[[related.indices]]
+# 		name = 'categories'
+# 		weight = 40
+
+# ---- Markdown rendering (optional) ----
+# [markup.goldmark.renderer]
+# 	unsafe = true # <- Allow raw HTML in content (e.g. embeds, iframes)
+# [markup.highlight]
+# 	codeFences = true
+# 	lineNos = true
+
+# -----------------------------------------------------------------------------
+# Module / version requirements (keep as-is)
+# -----------------------------------------------------------------------------
 [module]
   [module.hugoVersion]
     extended = false
