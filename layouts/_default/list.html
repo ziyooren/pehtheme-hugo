@@ -10,7 +10,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-4">
 
-      {{ range ( .Paginator 6 ).Pages }}
+      {{ range .Paginator.Pages }}
       
         {{- partial "content/card.html" . -}}
 
