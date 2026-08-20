@@ -130,7 +130,7 @@
             </a>
           </li>
           {{- end }}
-          {{- with site.Params.social.twitter }}
+          {{- with or site.Params.social.twitter site.Params.social.x }}
           <li>
             <a class="flex items-center decoration-auto hover:underline" href="{{ . }}" target="_blank" rel="noopener">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">

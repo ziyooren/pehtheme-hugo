@@ -6,7 +6,9 @@
 
 		<h2 class="font-bold text-xl mb-8">Recent Post</h2>
 
-		{{ range where .Site.RegularPages "Type" "posts" | first 5}}
+		{{- $sections := site.Params.mainSections | default (slice "posts") }}
+
+		{{ range where .Site.RegularPages "Type" "in" $sections | first 5}}
 
 			{{- partial "content/list-post.html" . -}}
 

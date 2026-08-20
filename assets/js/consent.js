@@ -27,7 +27,7 @@
 	   precompiled Tailwind CSS (which may not cover these classes). */
 	var styleEl = document.createElement("style");
 	styleEl.textContent = [
-		"#consent-banner[hidden]{display:none}",
+		"#consent-banner[hidden]{display:none!important}",
 		"#consent-banner{position:fixed;left:0;right:0;z-index:9999;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:.875rem;line-height:1.5;color:#18181b}",
 		"#consent-banner[data-position='top']{top:0}",
 		"#consent-banner[data-position='bottom']{bottom:0}",
