@@ -13,6 +13,8 @@ enableRobotsTXT = true # <- Generate robots.txt with a sitemap reference
 	description = 'Pehtheme Hugo Lite: A minimalist Hugo theme, built with TailwindCSS, for efficient performance and minimalism.'
 	mainSections = 'posts'
 	# logo = '/images/logo.png' # <- Optional: replace the default egg-fried icon in the header
+	# affiliate_disclosure = '/affiliate-disclosure/' # <- Optional: shows an "Affiliate Disclosure" link in the article author line
+	# affiliate_disclosure_label = 'Affiliate Disclosure' # <- Optional: custom link text (defaults to "Affiliate Disclosure")
 
 	[params.author]
 		name = 'Anthony Arphan'

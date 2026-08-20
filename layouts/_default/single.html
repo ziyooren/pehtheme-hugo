@@ -39,6 +39,12 @@
             {{ .ReadingTime }} min read
           </li>
 
+          {{- with site.Params.affiliate_disclosure }}
+          <li class="before:content-['•'] before:mr-2 before:opacity-50 my-2">
+            <a class="underline decoration-auto" href="{{ . | relURL }}">{{ site.Params.affiliate_disclosure_label | default "Affiliate Disclosure" }}</a>
+          </li>
+          {{- end }}
+
         </ul>
 
       </div>

@@ -118,6 +118,14 @@ To replace the default egg-fried logo icon in the header with your own image:
   logo = '/images/logo.png'
 ```
 
+To show an affiliate disclosure link in the article author line (after the reading time), point it at your disclosure page:
+
+```toml
+[params]
+  affiliate_disclosure = '/affiliate-disclosure/'       # (Link is hidden when unset)
+  affiliate_disclosure_label = 'Affiliate Disclosure'   # (Optional; defaults to "Affiliate Disclosure")
+```
+
 Comments are powered by Disqus — set your shortname in `hugo.toml`:
 
 ```toml
