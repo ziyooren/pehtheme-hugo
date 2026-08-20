@@ -24,7 +24,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
 <meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}">
-<meta property="og:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ .Params.description }}{{ end }}">
+<meta property="og:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ or .Params.description (.Summary | plainify | truncate 160) }}{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
 {{- with $ogImage }}<meta property="og:image" content="{{ . }}">{{ end }}
 {{- if .IsPage }}
@@ -35,7 +35,7 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}">
-<meta name="twitter:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ .Params.description }}{{ end }}">
+<meta name="twitter:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ or .Params.description (.Summary | plainify | truncate 160) }}{{ end }}">
 {{- with $ogImage }}<meta name="twitter:image" content="{{ . }}">{{ end }}
 
 <!-- JSON-LD structured data -->
@@ -46,12 +46,21 @@
 {{- end }}
 <script type="application/ld+json">{{ $webSite | jsonify | safeJS }}</script>
 {{- else if .IsPage }}
-{{- $article := dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" .Title "description" (.Params.description | default "") "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00") "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink) "url" .Permalink }}
+{{- $desc := or .Params.description (.Summary | plainify | truncate 160) }}
+{{- if in site.MainSections .Type }}
+{{- /* Blog posts (type in mainSections) get BlogPosting schema */ -}}
+{{- $article := dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" .Title "description" $desc "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00") "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink) "url" .Permalink }}
 {{- if site.Params.author.name }}
 {{- $article = merge $article (dict "author" (dict "@type" "Person" "name" site.Params.author.name) "publisher" (dict "@type" "Organization" "name" site.Params.author.name)) }}
 {{- end }}
 {{- with $ogImage }}{{ $article = merge $article (dict "image" .) }}{{ end }}
 <script type="application/ld+json">{{ $article | jsonify | safeJS }}</script>
+{{- else }}
+{{- /* Standalone pages (About/Contact/Privacy, search, archives) get WebPage schema */ -}}
+{{- $pageSchema := dict "@context" "https://schema.org" "@type" "WebPage" "name" .Title "url" .Permalink "description" $desc }}
+{{- with $ogImage }}{{ $pageSchema = merge $pageSchema (dict "image" .) }}{{ end }}
+<script type="application/ld+json">{{ $pageSchema | jsonify | safeJS }}</script>
+{{- end }}
 {{- end }}
 {{- if or (not .IsHome) (gt (len .Ancestors) 0) }}
 {{- if gt (len .Ancestors) 0 }}
