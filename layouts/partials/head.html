@@ -15,10 +15,16 @@
 {{- printf `<link rel=%q type=%q href=%q title=%q>` .Rel .MediaType.Type .Permalink site.Title | safeHTML -}}
 {{- end -}}
 
-{{- /* Resolve the social share image: remote URL, local resource, or site default. */ -}}
+{{- /* Resolve the social share image: remote URL, local resource, or site default.
+       Local resources are downscaled/compressed so social scrapers (X/Twitter,
+       Facebook) can fetch them fast and reliably. */ -}}
 {{- $ogImage := site.Params.og_image | default "" -}}
 {{- with .Params.image | default .Params.cover.image -}}
-  {{- $ogImage = partial "content/image-url.html" (dict "page" $ "path" .) -}}
+  {{- if strings.HasPrefix . "http" -}}
+    {{- $ogImage = . -}}
+  {{- else -}}
+    {{- $ogImage = partial "content/image-url.html" (dict "page" $ "path" . "process" "resize 1200x q80") -}}
+  {{- end -}}
 {{- end -}}
 
 <!-- Open Graph -->
