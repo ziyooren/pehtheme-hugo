@@ -55,3 +55,8 @@
 .prose thead th { background: #f4f4f5; font-weight: 600; }
 .prose pre { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .prose img, .prose video, .prose iframe { max-width: 100%; height: auto; }
+
+/* Hide unfilled AdSense units (Google recommended) so low fill rates don't
+   leave blank ad slots that look broken. Filled units get
+   data-ad-status="filled" from the AdSense script and stay visible. */
+ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
