@@ -11,6 +11,11 @@
          until the user opts in via the banner). */ -}}
 {{- $s := site.Params.scripts | default dict -}}
 {{- $consent := site.Params.consent | default dict -}}
+{{- /* GA4 library must be loaded, otherwise gtag() only pushes into
+       dataLayer and no hits are ever sent (analytics showed 0 visitors). */ -}}
+{{- with $s.analytics }}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
+{{- end }}
 {{- if or $s.analytics $s.gtm $s.adsense $consent }}
 <script>
 window.dataLayer = window.dataLayer || [];
