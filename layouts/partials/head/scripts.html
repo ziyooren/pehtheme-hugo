@@ -11,18 +11,33 @@
          until the user opts in via the banner). */ -}}
 {{- $s := site.Params.scripts | default dict -}}
 {{- $consent := site.Params.consent | default dict -}}
-{{- /* GA4 library must be loaded, otherwise gtag() only pushes into
-       dataLayer and no hits are ever sent (analytics showed 0 visitors). */ -}}
-{{- with $s.analytics }}
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
-{{- end }}
+{{- /* Consent defaults must reach the dataLayer BEFORE the gtag.js library
+       executes, otherwise gtag.js ignores the late default. Two defaults:
+       granted everywhere, denied (with wait_for_update) in EEA+UK only —
+       gtag.js matches the region against the visitor's location itself,
+       no geo lookup/API is needed on our side. The region list is
+       overridable via params.consent.regions. */ -}}
 {{- if or $s.analytics $s.gtm $s.adsense $consent }}
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 {{- if $consent }}
+{{- $regions := $consent.regions | default (slice
+      "AT" "BE" "BG" "HR" "CY" "CZ" "DK" "EE" "FI" "FR" "DE" "GR" "HU" "IE"
+      "IT" "LV" "LT" "LU" "MT" "NL" "PL" "PT" "RO" "SK" "SI" "SE" "IS" "LI"
+      "NO" "UK") }}
 gtag('consent', 'default', {
+  'analytics_storage': 'granted',
+  'ad_storage': 'granted',
+  'personalization_storage': 'granted',
+  'functionality_storage': 'granted',
+  'ad_user_data': 'granted',
+  'ad_personalization': 'granted'
+});
+gtag('consent', 'default', {
+  'wait_for_update': 500,
+  'region': [{{ range $i, $r := $regions }}{{ if $i }}, {{ end }}'{{ $r }}'{{ end }}],
   'analytics_storage': 'denied',
   'ad_storage': 'denied',
   'personalization_storage': 'denied',
@@ -31,8 +46,17 @@ gtag('consent', 'default', {
   'ad_personalization': 'denied'
 });
 {{- end }}
-{{- with $s.analytics }}gtag('config', '{{ . }}');{{ end }}
+{{- with $s.analytics }}
+window.PEHTHEME_GA_ID = '{{ . }}';
+gtag('config', '{{ . }}');
+{{- end }}
 </script>
+{{- end }}
+{{- /* GA4 library must be loaded, otherwise gtag() only pushes into
+       dataLayer and no hits are ever sent (analytics showed 0 visitors).
+       Loaded AFTER the consent defaults above. */ -}}
+{{- with $s.analytics }}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
 {{- end }}
 
 {{- with $s.gtm }}

@@ -76,6 +76,20 @@
 		}
 	}
 
+	/* Re-send the GA4 config after an explicit opt-in. The page_view that
+	   fired while analytics_storage was denied carried no client_id (cookieless
+	   ping); plain gtag.js — unlike GTM — does not resend it automatically. */
+	function pushConfig() {
+		var id = window.PEHTHEME_GA_ID;
+		if (!id) return;
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { window.dataLayer.push(arguments); }
+		gtag("config", id);
+		if (typeof window.gtag === "function") {
+			try { window.gtag("config", id); } catch (e) { /* noop */ }
+		}
+	}
+
 	function syncCheckboxes(banner, state) {
 		var inputs = banner.querySelectorAll("input[data-consent-cat]");
 		inputs.forEach(function (input) {
@@ -100,6 +114,9 @@
 	function saveChoices(banner, state) {
 		setStored(state);
 		pushConsent("update", state);
+		if (state.analytics_storage === "granted") {
+			pushConfig();
+		}
 		closeBanner(banner);
 	}
 
