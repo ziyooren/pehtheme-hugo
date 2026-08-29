@@ -3,3 +3,11 @@
 
 # Local symlink used to run the example site (themes/pehtheme-hugo -> repo root)
 exampleSite/themes/
+
+# Hugo build output
+public/
+resources/
+
+# Local-only test files (e.g. consent-test.local.toml with a fake GA ID)
+*.local.toml
+*.local.png
