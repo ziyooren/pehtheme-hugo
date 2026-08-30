@@ -1,12 +1,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Dynamic title for SEO -->
-<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
+<title>{{ if .IsHome }}{{ with site.Params.home_title_suffix }}{{ printf "%s | %s" site.Title . }}{{ else }}{{ site.Title }}{{ end }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
 <!-- Dynamic description for SEO -->
 <meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ or .Params.description (.Summary | plainify | truncate 160) }}{{ end }}">
-<!-- Noindex for taxonomy/section pages (preserve crawl budget) -->
-{{- if and site.Params.seo.noindex_taxonomy (or (eq .Kind "term") (eq .Kind "section")) }}
-<meta name="robots" content="noindex, follow">
+<!-- Noindex: opt-in pages via front matter (noindex: true, e.g. /search/) and
+     taxonomy/section pages when noindex_taxonomy is on (preserve crawl budget) -->
+{{- $robots := "" }}
+{{- if .Params.noindex }}
+{{- $robots = "noindex, follow" }}
+{{- else if and site.Params.seo.noindex_taxonomy (or (eq .Kind "term") (eq .Kind "section")) }}
+{{- $robots = "noindex, follow" }}
+{{- end }}
+{{- with $robots }}
+<meta name="robots" content="{{ . }}">
 {{- end }}
 <!-- Canonical URL -->
 <link rel="canonical" href="{{ .Permalink }}">
@@ -33,7 +40,7 @@
 
 <!-- Open Graph -->
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
-<meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}">
+<meta property="og:title" content="{{ if .IsHome }}{{ with site.Params.home_title_suffix }}{{ printf "%s | %s" site.Title . }}{{ else }}{{ site.Title }}{{ end }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}">
 <meta property="og:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ or .Params.description (.Summary | plainify | truncate 160) }}{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
 {{- with $ogImage }}<meta property="og:image" content="{{ . }}">{{ end }}
@@ -44,7 +51,7 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}">
+<meta name="twitter:title" content="{{ if .IsHome }}{{ with site.Params.home_title_suffix }}{{ printf "%s | %s" site.Title . }}{{ else }}{{ site.Title }}{{ end }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}">
 <meta name="twitter:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ or .Params.description (.Summary | plainify | truncate 160) }}{{ end }}">
 {{- with $ogImage }}<meta name="twitter:image" content="{{ . }}">{{ end }}
 

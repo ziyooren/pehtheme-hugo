@@ -1,0 +1,26 @@
+{{- /* Custom sitemap aligned with the theme's robots meta.
+
+       When site.Params.seo.noindex_taxonomy is on, taxonomy terms and section
+       lists get <meta name="robots" content="noindex, follow"> — so they must
+       not appear in the sitemap either (sitemap and robots meta must agree,
+       and listing them wastes crawl budget). Without the param, behavior is
+       Hugo's default: every page is listed.
+
+       Pages can always opt out via front matter: sitemapExclude: true (kept
+       out of the sitemap) or noindex: true (rendered noindex, so also kept
+       out). */ -}}
+{{- $pages := .Data.Pages -}}
+{{- if site.Params.seo.noindex_taxonomy -}}
+{{- $pages = where $pages "Kind" "in" (slice "home" "page") -}}
+{{- end -}}
+{{- $pages = where $pages ".Params.sitemapExclude" "!=" true -}}
+{{- $pages = where $pages ".Params.noindex" "!=" true -}}
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{{- range $pages }}
+  <url>
+    <loc>{{ .Permalink }}</loc>{{ if not .Lastmod.IsZero }}
+    <lastmod>{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}</lastmod>{{ end }}
+  </url>
+{{- end }}
+</urlset>
