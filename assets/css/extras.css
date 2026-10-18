@@ -56,6 +56,21 @@
 .prose pre { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .prose img, .prose video, .prose iframe { max-width: 100%; height: auto; }
 
+/* Inline code: Tailwind Typography wraps every <code> in literal backticks via
+   ::before/::after, so rendered posts showed `useradd` with the Markdown
+   delimiters visible. Drop them — but the backticks were also the only cue
+   separating code from **bold**, since .prose code uses the same colour as
+   body text, so give inline code a quiet chip instead.
+   :not(pre code) keeps block code untouched (main.css resets it to none). */
+.prose code::before,
+.prose code::after { content: none; }
+
+.prose code:not(pre code) {
+  background-color: #f4f4f5;
+  border-radius: .25rem;
+  padding: .125em .375em;
+}
+
 /* Hide unfilled AdSense units (Google recommended) so low fill rates don't
    leave blank ad slots that look broken. Filled units get
    data-ad-status="filled" from the AdSense script and stay visible. */

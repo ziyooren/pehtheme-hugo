@@ -56,7 +56,8 @@ Cloudflare Pages and purges the CF cache).
 
 - This fork has accumulated real fixes beyond upstream (GA4 gtag loading,
   Consent Mode v2 regional defaults, AdSense unit CSS, og_image absolutizing,
-  responsive tables). Tags: `v1.0.0`, `v1.0.2` (+2 commits as of 2026-08-31,
+  responsive tables, inline-code chip replacing Tailwind Typography's literal
+  backticks). Tags: `v1.0.0`, `v1.0.2` (+2 commits as of 2026-08-31,
   `17d389a` = SEO toolkit: home title suffix, per-page noindex, gated sitemap).
 - Upstream pulls are not routine; if syncing upstream later, diff against
   `layouts/partials/head.html` and `layouts/sitemap.xml` first — that's where
