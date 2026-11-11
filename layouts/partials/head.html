@@ -1,7 +1,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Dynamic title for SEO -->
-<title>{{ if .IsHome }}{{ with site.Params.home_title_suffix }}{{ printf "%s | %s" site.Title . }}{{ else }}{{ site.Title }}{{ end }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
+{{- /*
+     Page titles are rendered without the site name by default.
+     Google displays the site name on its own line (taken from WebSite schema /
+     og:site_name on the home page) and truncates title links at roughly 600px,
+     about 60 characters. Appending " | theWindows12" costs 15 characters on
+     every page. Set params.title_with_site_name: true in hugo.yaml to restore it.
+     Open Graph and Twitter titles below still carry the suffix: social cards
+     have no separate site-name line and more room for it.
+*/ -}}
+{{- $withSiteName := site.Params.title_with_site_name | default false -}}
+<title>{{ if .IsHome }}{{ with site.Params.home_title_suffix }}{{ printf "%s | %s" site.Title . }}{{ else }}{{ site.Title }}{{ end }}{{ else }}{{ if $withSiteName }}{{ printf "%s | %s" .Title site.Title }}{{ else }}{{ .Title }}{{ end }}{{ end }}</title>
 <!-- Dynamic description for SEO -->
 <meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ or .Params.description (.Summary | plainify | truncate 160) }}{{ end }}">
 <!-- Noindex: opt-in pages via front matter (noindex: true, e.g. /search/) and
