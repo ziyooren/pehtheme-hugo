@@ -1,0 +1,41 @@
+{{- /*
+  Organization node for JSON-LD — opt-in via params.organization.
+
+  Why opt-in: this theme is shared by several sites. Without the param the
+  rendered output stays byte-identical to the previous behaviour (publisher = a
+  bare Organization carrying the author's name), so other sites are unaffected.
+
+  Why it exists: the product sites in this network declare
+  https://www.cnelecar.com/#organization as their parentOrganization. Search
+  engines only consolidate those references into one entity if the identifier is
+  also defined somewhere authoritative on the brand's own site — this is that
+  definition.
+
+  Config (hugo.yaml):
+    params:
+      organization:
+        name: "CNELECAR"
+        url: "https://www.cnelecar.com/"
+        logo: "/favicon.png"
+        description: "Explore the latest tech news, reviews, deals and resources."
+        same_as:
+          - "https://www.facebook.com/com.cnelecar"
+          - "https://x.com/CNELECAR"
+
+  Hugo lower-cases config keys, hence `same_as` rather than `sameAs`.
+*/ -}}
+{{- with site.Params.organization -}}
+  {{- $url := .url | default site.BaseURL -}}
+  {{- $node := dict
+      "@context" "https://schema.org"
+      "@type" "Organization"
+      "@id" (printf "%s#organization" ($url | absURL))
+      "name" (.name | default site.Title)
+      "url" $url
+  -}}
+  {{- with .logo }}{{ $node = merge $node (dict "logo" (. | absURL)) }}{{ end -}}
+  {{- with .description }}{{ $node = merge $node (dict "description" .) }}{{ end -}}
+  {{- with .same_as }}{{ $node = merge $node (dict "sameAs" .) }}{{ end -}}
+  {{- with site.Params.author.name }}{{ $node = merge $node (dict "founder" (dict "@type" "Person" "name" .)) }}{{ end -}}
+  {{- return $node -}}
+{{- end -}}

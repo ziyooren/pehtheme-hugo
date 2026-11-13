@@ -66,9 +66,17 @@
 {{- with $ogImage }}<meta name="twitter:image" content="{{ . }}">{{ end }}
 
 <!-- JSON-LD structured data -->
+{{- $org := partial "schema/organization.html" . }}
+{{- with $org }}
+{{- /* Emitted on every page, not just the home page: @id references are resolved
+       per document, so the definition has to travel with whatever references it. */ -}}
+<script type="application/ld+json">{{ . | jsonify | safeJS }}</script>
+{{- end }}
 {{- if .IsHome }}
 {{- $webSite := dict "@context" "https://schema.org" "@type" "WebSite" "name" site.Title "url" site.BaseURL "description" (site.Params.description | default "") }}
-{{- if site.Params.author.name }}
+{{- if $org }}
+{{- $webSite = merge $webSite (dict "@id" (printf "%s#website" site.BaseURL) "publisher" (dict "@id" (index $org "@id"))) }}
+{{- else if site.Params.author.name }}
 {{- $webSite = merge $webSite (dict "publisher" (dict "@type" "Organization" "name" site.Params.author.name)) }}
 {{- end }}
 <script type="application/ld+json">{{ $webSite | jsonify | safeJS }}</script>
@@ -78,7 +86,12 @@
 {{- /* Blog posts (type in mainSections) get BlogPosting schema */ -}}
 {{- $article := dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" .Title "description" $desc "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00") "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink) "url" .Permalink }}
 {{- if site.Params.author.name }}
-{{- $article = merge $article (dict "author" (dict "@type" "Person" "name" site.Params.author.name) "publisher" (dict "@type" "Organization" "name" site.Params.author.name)) }}
+{{- $article = merge $article (dict "author" (dict "@type" "Person" "name" site.Params.author.name)) }}
+{{- end }}
+{{- if $org }}
+{{- $article = merge $article (dict "publisher" (dict "@id" (index $org "@id"))) }}
+{{- else if site.Params.author.name }}
+{{- $article = merge $article (dict "publisher" (dict "@type" "Organization" "name" site.Params.author.name)) }}
 {{- end }}
 {{- with $ogImage }}{{ $article = merge $article (dict "image" .) }}{{ end }}
 <script type="application/ld+json">{{ $article | jsonify | safeJS }}</script>
@@ -86,6 +99,7 @@
 {{- /* Standalone pages (About/Contact/Privacy, search, archives) get WebPage schema */ -}}
 {{- $pageSchema := dict "@context" "https://schema.org" "@type" "WebPage" "name" .Title "url" .Permalink "description" $desc }}
 {{- with $ogImage }}{{ $pageSchema = merge $pageSchema (dict "image" .) }}{{ end }}
+{{- with $org }}{{ $pageSchema = merge $pageSchema (dict "publisher" (dict "@id" (index . "@id"))) }}{{ end }}
 <script type="application/ld+json">{{ $pageSchema | jsonify | safeJS }}</script>
 {{- end }}
 {{- end }}
