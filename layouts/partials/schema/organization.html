@@ -25,17 +25,23 @@
   Hugo lower-cases config keys, hence `same_as` rather than `sameAs`.
 */ -}}
 {{- with site.Params.organization -}}
-  {{- $url := .url | default site.BaseURL -}}
-  {{- $node := dict
+  {{- /* Built as one dict literal and returned directly — deliberately no
+         `$node = merge ...` steps. Hugo 0.153 renders with the v1.0.0 template
+         engine, where assigning to an outer-scope variable from inside a nested
+         `with` block loses the binding; the later `return $node` then fails with
+         "undefined variable: $node". Newer Hugo (0.169) does not reproduce it.
+         Cloudflare Pages pins HUGO_VERSION, so the safe form is the one that
+         never relies on cross-block assignment. Optional fields fall back to
+         sensible defaults rather than being merged in conditionally. */ -}}
+  {{- return (dict
       "@context" "https://schema.org"
       "@type" "Organization"
-      "@id" (printf "%s#organization" ($url | absURL))
+      "@id" (printf "%s#organization" ((.url | default site.BaseURL) | absURL))
       "name" (.name | default site.Title)
-      "url" $url
-  -}}
-  {{- with .logo }}{{ $node = merge $node (dict "logo" (. | absURL)) }}{{ end -}}
-  {{- with .description }}{{ $node = merge $node (dict "description" .) }}{{ end -}}
-  {{- with .same_as }}{{ $node = merge $node (dict "sameAs" .) }}{{ end -}}
-  {{- with site.Params.author.name }}{{ $node = merge $node (dict "founder" (dict "@type" "Person" "name" .)) }}{{ end -}}
-  {{- return $node -}}
+      "url" (.url | default site.BaseURL)
+      "logo" ((.logo | default "favicon.png") | absURL)
+      "description" (.description | default site.Params.description | default "")
+      "sameAs" (.same_as | default (slice))
+      "founder" (dict "@type" "Person" "name" (site.Params.author.name | default site.Title))
+  ) -}}
 {{- end -}}
