@@ -1,0 +1,16 @@
+{{- /*
+  标签 / 分类名的显示形式。
+
+  Hugo 的 humanize 会把整串转成小写再首字母大写，品牌名会被改坏：
+  NVIDIA -> Nvidia、BIOS -> Bios、GeForce NOW -> Geforce now。
+
+  这里的规则：作者写成全小写的（cloud gaming）首字母大写好读；
+  作者显式写了大写字母的（NVIDIA、PDF、WSL2）原样输出，不做任何改写。
+  传参为一个字符串，返回显示文本。
+*/ -}}
+{{- $name := . -}}
+{{- if eq $name (lower $name) -}}
+  {{- $name | humanize -}}
+{{- else -}}
+  {{- $name -}}
+{{- end -}}
