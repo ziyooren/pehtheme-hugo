@@ -66,16 +66,37 @@
 {{- with $ogImage }}<meta name="twitter:image" content="{{ . }}">{{ end }}
 
 <!-- JSON-LD structured data -->
-{{- $org := partial "schema/organization.html" . }}
-{{- with $org }}
+{{- /* Organization node, opt-in via params.organization (see the note in
+       hugo.yaml). Assembled with plain variables and printed under an `if`
+       rather than returned from a partial, because Hugo 0.153 — the version
+       Cloudflare Pages pins — evaluates a partial `return` unconditionally: it
+       ignores the `if`/`with` around it and resolves the returned expression
+       against the partial's own dot. That is what crashed the build with
+       "can't evaluate field url in type page.Page", and it is also what leaked
+       the node onto sites that never opted in. Output guarded by `if` is not
+       affected. */ -}}
+{{- $org := site.Params.organization | default dict -}}
+{{- $orgUrl := $org.url | default site.BaseURL -}}
+{{- $orgId := printf "%s#organization" ($orgUrl | absURL) -}}
+{{- if $org }}
 {{- /* Emitted on every page, not just the home page: @id references are resolved
        per document, so the definition has to travel with whatever references it. */ -}}
-<script type="application/ld+json">{{ . | jsonify | safeJS }}</script>
+<script type="application/ld+json">{{ (dict
+    "@context" "https://schema.org"
+    "@type" "Organization"
+    "@id" $orgId
+    "name" ($org.name | default site.Title)
+    "url" $orgUrl
+    "logo" (($org.logo | default "favicon.png") | absURL)
+    "description" (or $org.description site.Params.description "")
+    "sameAs" ($org.same_as | default (slice))
+    "founder" (dict "@type" "Person" "name" (site.Params.author.name | default site.Title))
+) | jsonify | safeJS }}</script>
 {{- end }}
 {{- if .IsHome }}
 {{- $webSite := dict "@context" "https://schema.org" "@type" "WebSite" "name" site.Title "url" site.BaseURL "description" (site.Params.description | default "") }}
 {{- if $org }}
-{{- $webSite = merge $webSite (dict "@id" (printf "%s#website" site.BaseURL) "publisher" (dict "@id" (index $org "@id"))) }}
+{{- $webSite = merge $webSite (dict "@id" (printf "%s#website" site.BaseURL) "publisher" (dict "@id" $orgId)) }}
 {{- else if site.Params.author.name }}
 {{- $webSite = merge $webSite (dict "publisher" (dict "@type" "Organization" "name" site.Params.author.name)) }}
 {{- end }}
@@ -89,7 +110,7 @@
 {{- $article = merge $article (dict "author" (dict "@type" "Person" "name" site.Params.author.name)) }}
 {{- end }}
 {{- if $org }}
-{{- $article = merge $article (dict "publisher" (dict "@id" (index $org "@id"))) }}
+{{- $article = merge $article (dict "publisher" (dict "@id" $orgId)) }}
 {{- else if site.Params.author.name }}
 {{- $article = merge $article (dict "publisher" (dict "@type" "Organization" "name" site.Params.author.name)) }}
 {{- end }}
@@ -99,7 +120,7 @@
 {{- /* Standalone pages (About/Contact/Privacy, search, archives) get WebPage schema */ -}}
 {{- $pageSchema := dict "@context" "https://schema.org" "@type" "WebPage" "name" .Title "url" .Permalink "description" $desc }}
 {{- with $ogImage }}{{ $pageSchema = merge $pageSchema (dict "image" .) }}{{ end }}
-{{- with $org }}{{ $pageSchema = merge $pageSchema (dict "publisher" (dict "@id" (index . "@id"))) }}{{ end }}
+{{- if $org }}{{ $pageSchema = merge $pageSchema (dict "publisher" (dict "@id" $orgId)) }}{{ end }}
 <script type="application/ld+json">{{ $pageSchema | jsonify | safeJS }}</script>
 {{- end }}
 {{- end }}
