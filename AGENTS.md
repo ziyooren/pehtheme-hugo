@@ -44,9 +44,14 @@ Invariants to preserve when editing:
 Point each site's submodule working tree at fork HEAD (or temporarily copy the
 changed files in), run `hugo --minify` in both site repos, and check:
 
-- sitemap `<loc>` count and composition (cnelecar: 84 URLs = 78 posts + 6 pages;
-  theWindows12: 100 = 94 + 6; zero tags/categories while `noindex_taxonomy` is on)
+- sitemap `<loc>` count and composition (2026-11-16: cnelecar 89 URLs = 83 posts
+  + 6 pages; theWindows12 102 = 96 + 6; zero tags/categories while
+  `noindex_taxonomy` is on)
 - home page title, `/search/` robots meta, one post's BlogPosting JSON-LD
+
+Local toolchain is Hugo 0.169; Cloudflare Pages runs the same version since
+2026-11-16 (it used to pin 0.153.2, which is worth remembering when reading
+older commit messages).
 
 Then: commit, **push**, and bump the pin in both sites
 (`themes/pehtheme-hugo` → `git fetch && git checkout main && git pull`),

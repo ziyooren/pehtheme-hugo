@@ -68,8 +68,8 @@
 <!-- JSON-LD structured data -->
 {{- /* Organization node, opt-in via params.organization (see the note in
        hugo.yaml). Assembled with plain variables and printed under an `if`
-       rather than returned from a partial, because Hugo 0.153 — the version
-       Cloudflare Pages pins — evaluates a partial `return` unconditionally: it
+       rather than returned from a partial, because Hugo 0.153 evaluates a
+       partial `return` unconditionally: it
        ignores the `if`/`with` around it and resolves the returned expression
        against the partial's own dot. That is what crashed the build with
        "can't evaluate field url in type page.Page", and it is also what leaked
