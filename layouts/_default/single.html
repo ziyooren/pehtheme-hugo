@@ -71,8 +71,11 @@
       <!-- Content -->
 
       {{- $content := .Content -}}
+      {{- /* params.adsense is a map (client, inline_slot); params.scripts.adsense is the
+           plain publisher-ID string used by the tag loader. Guard the type: a string here
+           used to abort the build with "can't evaluate field client in type string". */ -}}
       {{- with site.Params.adsense }}
-        {{- if and .client .inline_slot }}
+        {{- if and (reflect.IsMap .) .client .inline_slot }}
           {{- $ad := printf `<div class="ad-before-h2"><ins class="adsbygoogle" style="display:block" data-ad-client="%s" data-ad-slot="%s" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>` .client .inline_slot -}}
           {{- $content = $content | replaceRE "<h2 " (printf "%s<h2 " $ad) -}}
         {{- end -}}
