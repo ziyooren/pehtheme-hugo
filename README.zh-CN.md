@@ -119,7 +119,7 @@ theme = 'pehtheme-hugo'
 
   # SEO
   [params.seo]
-    noindex_taxonomy = true         # 分类/标签页 noindex
+    noindex_taxonomy = true         # 分类/标签页 noindex（含 /tags/、/categories/ 根页）
 
 [menu]                              # 顶部菜单
   [[menu.main]]

@@ -22,7 +22,8 @@ Site params (all optional, all default to upstream behavior when unset):
 
 - `params.home_title_suffix` — homepage `<title>`/`og:title`/`twitter:title`
   become `"<site.Title> | <suffix>"`; unset = upstream behavior (`site.Title`).
-- `params.seo.noindex_taxonomy: true` — taxonomy terms & section list pages
+- `params.seo.noindex_taxonomy: true` — taxonomy list pages (terms, plus the
+  `/tags/` and `/categories/` roots) & section list pages
   render `<meta name="robots" content="noindex, follow">` (upstream had this).
 
 Front matter keys on any page:

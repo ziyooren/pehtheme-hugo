@@ -118,7 +118,7 @@ See [exampleSite/hugo.toml](exampleSite/hugo.toml) for a fully commented referen
 
   # SEO
   [params.seo]
-    noindex_taxonomy = true             # noindex, follow on tag/category/section pages
+    noindex_taxonomy = true             # noindex, follow on tag/category/section pages (incl. /tags/, /categories/)
 
 [menu]                                  # top navigation
   [[menu.main]]
