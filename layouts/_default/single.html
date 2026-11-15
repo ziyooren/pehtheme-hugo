@@ -71,13 +71,28 @@
       <!-- Content -->
 
       {{- $content := .Content -}}
-      {{- /* params.adsense is a map (client, inline_slot); params.scripts.adsense is the
-           plain publisher-ID string used by the tag loader. Guard the type: a string here
-           used to abort the build with "can't evaluate field client in type string". */ -}}
+      {{- /* params.adsense is a map (client, inline_slot, inline_every, inline_max);
+           params.scripts.adsense is the plain publisher-ID string used by the tag
+           loader. Guard the type: a string here used to abort the build with
+           "can't evaluate field client in type string".
+
+           inline_every: one unit before every Nth <h2> (default 1 = before all)
+           inline_max:   at most N units per post (default 99 ≈ uncapped; 0 = none)
+           Defaults reproduce the old "before every <h2>" behaviour. */ -}}
       {{- with site.Params.adsense }}
         {{- if and (reflect.IsMap .) .client .inline_slot }}
           {{- $ad := printf `<div class="ad-before-h2"><ins class="adsbygoogle" style="display:block" data-ad-client="%s" data-ad-slot="%s" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>` .client .inline_slot -}}
-          {{- $content = $content | replaceRE "<h2 " (printf "%s<h2 " $ad) -}}
+          {{- $every := .inline_every | default 1 -}}
+          {{- if lt $every 1 }}{{ $every = 1 }}{{ end -}}
+          {{- $max := 99 -}}
+          {{- if isset . "inline_max" }}{{ $max = int .inline_max }}{{ end -}}
+          {{- $limit := mul $max $every -}}
+          {{- $parts := split $content "<h2 " -}}
+          {{- $out := index $parts 0 -}}
+          {{- range $i, $p := after 1 $parts -}}
+            {{- $out = printf "%s%s<h2 %s" $out (cond (and (eq (mod $i $every) 0) (lt $i $limit)) $ad "") $p -}}
+          {{- end -}}
+          {{- $content = $out -}}
         {{- end -}}
       {{- end -}}
       {{- $content | safeHTML -}}

@@ -110,6 +110,8 @@ theme = 'pehtheme-hugo'
   [params.adsense]
     client = 'ca-pub-XXXXXXXX'
     inline_slot = '1234567890'
+    inline_every = 1          # 每隔 N 个 <h2> 插一个（1 = 每个都插）
+    inline_max = 99           # 每篇最多插几个（0 = 关闭文内广告）
 
   # 打赏按钮
   [params.donate]

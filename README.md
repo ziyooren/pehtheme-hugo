@@ -105,10 +105,12 @@ See [exampleSite/hugo.toml](exampleSite/hugo.toml) for a fully commented referen
     head = []                           # custom <head> scripts
     body = []                           # custom </body> scripts
 
-  # Inline ad (inserted before every <h2>)
+  # Inline ad (inserted before <h2> headings)
   [params.adsense]
     client = 'ca-pub-XXXXXXXX'
     inline_slot = '1234567890'
+    inline_every = 1          # one unit before every Nth <h2> (1 = all of them)
+    inline_max = 99           # cap units per post (0 = no inline ads)
 
   # Donation button
   [params.donate]

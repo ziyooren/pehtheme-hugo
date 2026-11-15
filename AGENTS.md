@@ -25,6 +25,10 @@ Site params (all optional, all default to upstream behavior when unset):
 - `params.seo.noindex_taxonomy: true` — taxonomy list pages (terms, plus the
   `/tags/` and `/categories/` roots) & section list pages
   render `<meta name="robots" content="noindex, follow">` (upstream had this).
+- `params.adsense.inline_every` / `.inline_max` — place an inline ad before
+  every Nth `<h2>` and stop after N units per post. Defaults `1` / `99`
+  reproduce the old "before every `<h2>`, uncapped" behavior; `inline_max: 0`
+  turns the units off without touching the `params.scripts.adsense` loader.
 
 Front matter keys on any page:
 
