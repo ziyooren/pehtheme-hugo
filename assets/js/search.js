@@ -60,7 +60,6 @@
 			var hay = [
 				item.title,
 				item.description,
-				item.summary,
 				(item.tags || []).join(" "),
 				(item.categories || []).join(" ")
 			].join(" ").toLowerCase();
